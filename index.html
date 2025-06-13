@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYC Shop - Верифицированные Аккаунты</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .site-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .site-logo:hover {
+      transform: scale(1.1);
+    }
+
+    .site-logo i {
+      font-size: 24px;
+      color: #667eea;
+    }
+
+    .site-title {
+      font-size: 1.8rem;
+      color: white;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .search-container {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+      margin: 0 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 50px 12px 20px;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .search-input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .header-icon {
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .header-icon:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff4757;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .filter-bar {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .filter-controls {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-group label {
+      font-weight: 600;
+      color: #555;
+    }
+
+    .filter-select, .sort-select {
+      padding: 8px 15px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      background: white;
+      color: #333;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-select:focus, .sort-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: auto;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product-card:hover::before {
+      opacity: 1;
+    }
+
+    .product-top {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-top::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+    }
+
+    .logo-wrapper {
+      background: white;
+      padding: 1rem;
+      border-radius: 15px;
+      display: inline-block;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-wrapper:hover {
+      transform: scale(1.05);
+    }
+
+    .logo-wrapper img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    .product-info {
+      padding: 1.5rem;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .star {
+      color: #ffd700;
+      font-size: 16px;
+    }
+
+    .rating-text {
+      margin-left: 0.5rem;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .product-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+      text-align: center;
+    }
+
+    .product-category {
+      font-size: 0.85rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .product-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .feature-badge {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .product-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #f0f0f0;
+      background: #fafafa;
+    }
+
+    .product-price {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .product-button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+    }
+
+    .product-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .favorite-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .favorite-btn:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+
+    .favorite-btn i {
+      color: #ff4757;
+      font-size: 18px;
+    }
+
+    .favorite-btn.active i {
+      color: #ff4757;
+    }
+
+    .availability {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    .availability.in-stock {
+      background: rgba(46, 204, 113, 0.1);
+      color: #27ae60;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    .availability.limited {
+      background: rgba(241, 196, 15, 0.1);
+      color: #f39c12;
+      border: 1px solid rgba(241, 196, 15, 0.3);
+    }
+
+    .availability.out-of-stock {
+      background: rgba(231, 76, 60, 0.1);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+    }
+
+    .no-results i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      color: #ddd;
+    }
+
+    /* Модальные окна */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 600px;
+      position: relative;
+      animation: modalSlideIn 0.3s ease;
+    }
+
+    @keyframes modalSlideIn {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.3s ease;
+    }
+
+    .close:hover {
+      color: #333;
+    }
+
+    .cart-sidebar {
+      position: fixed;
+      right: -400px;
+      top: 0;
+      width: 400px;
+      height: 100vh;
+      background: white;
+      box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      transition: right 0.3s ease;
+      z-index: 1500;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
+
+    .cart-overlay {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1400;
+      display: none;
+    }
+
+    .cart-overlay.show {
+      display: block;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .cart-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .cart-item-price {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .quantity-btn {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .quantity-btn:hover {
+      background: #e9ecef;
+    }
+
+    .cart-total {
+      padding: 1rem;
+      border-top: 2px solid #667eea;
+      margin-top: 1rem;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 1rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .checkout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    .product-detail {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .product-detail-image {
+      flex-shrink: 0;
+    }
+
+    .product-detail-image img {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 15px;
+    }
+
+    .product-detail-info h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .product-detail-price {
+      font-size: 2rem;
+      color: #667eea;
+      font-weight: 700;
+      margin: 1rem 0;
+    }
+
+    .product-description {
+      margin: 1rem 0;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    .crypto-payment {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .crypto-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .crypto-option {
+      background: white;
+      border: 2px solid #e1e5e9;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .crypto-option:hover,
+    .crypto-option.selected {
+      border-color: #667eea;
+      background: #f8f9ff;
+    }
+
+    .payment-address {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+      font-family: monospace;
+      word-break: break-all;
+    }
+
+    /* Профиль и избранное */
+    .profile-modal .modal-content {
+      max-width: 500px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .auth-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .register-btn {
+      background: #f8f9fa;
+      color: #333;
+      border: 2px solid #e1e5e9;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .user-info {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .user-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 0 auto 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+    }
+
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+
+    .favorite-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .favorite-item img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+    }
+
+    .favorite-item-info {
+      flex: 1;
+    }
+
+    .favorite-item-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .favorite-item-price {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .remove-favorite {
+      background: #ff4757;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .remove-favorite:hover {
+      background: #ff3838;
+      transform: scale(1.1);
+    }
+
+    .contact-form {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .contact-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 16px;
+      resize: vertical;
+      min-height: 120px;
+      font-family: inherit;
+    }
+
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .contact-info {
+      background: #f8f9fa;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .contact-item i {
+      color: #667eea;
+      font-size: 1.2rem;
+      width: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .search-container {
+        order: 1;
+        margin: 0;
+        width: 100%;
+      }
+
+      .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+
+      .stats {
+        margin-left: 0;
+        margin-top: 1rem;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .cart-sidebar {
+        width: 100%;
+        right: -100%;
+      }
+
+      .product-detail {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .crypto-options {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="site-logo">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="site-title">KYC Shop</div>
+      </div>
+      
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="Поиск аккаунтов..." id="searchInput">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      
+      <div class="header-icons">
+        <div class="header-icon" title="Избранное" id="favoritesBtn">
+          <i class="fas fa-heart"></i>
+        </div>
+        <div class="header-icon" title="Профиль" id="profileBtn">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="header-icon" title="Обратная связь" id="contactBtn">
+          <i class="fas fa-envelope"></i>
+        </div>
+        <div class="header-icon" title="Корзина" id="cartBtn">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" id="cartBadge">0</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="filter-bar">
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="categoryFilter">Категория:</label>
+          <select id="categoryFilter" class="filter-select">
+            <option value="all">Все категории</option>
+            <option value="crypto">Криптоплатформы</option>
+            <option value="payment">Платежные системы</option>
+            <option value="social">Социальные сети</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="priceFilter">Цена:</label>
+          <select id="priceFilter" class="filter-select">
+            <option value="all">Любая цена</option>
+            <option value="0-30">$0 - $30</option>
+            <option value="30-50">$30 - $50</option>
+            <option value="50-100">$50 - $100</option>
+            <option value="100+">$100+</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="sortBy">Сортировка:</label>
+          <select id="sortBy" class="sort-select">
+            <option value="name">По названию</option>
+            <option value="price-low">Цена: по возрастанию</option>
+            <option value="price-high">Цена: по убыванию</option>
+            <option value="rating">По рейтингу</option>
+          </select>
+        </div>
+        
+        <div class="stats">
+          <i class="fas fa-chart-bar"></i>
+          <span id="resultsCount">Показано: 0 из 0</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="productGrid" class="product-grid">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Загрузка товаров...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Корзина -->
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <h2>Корзина</h2>
+    <div id="cartItems"></div>
+    <div class="cart-total">
+      <div>Итого: $<span id="cartTotal">0.00</span></div>
+      <button class="checkout-btn" onclick="openCheckout()">Оформить заказ</button>
+    </div>
+  </div>
+
+  <!-- Модальное окно товара -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('productModal')">&times;</span>
+      <div id="productDetail"></div>
+    </div>
+  </div>
+
+  <!-- Модальное окно профиля -->
+  <div id="profileModal" class="modal profile-modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('profileModal')">&times;</span>
+      <div id="profileContent">
+        <div class="auth-form">
+          <h2>Вход в аккаунт</h2>
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Введите ваш email">
+          </div>
+          <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" placeholder="Введите пароль">
+          </div>
+          <div class="auth-buttons">
+            <button class="auth-btn login-btn" onclick="login()">Войти</button>
+            <button class="auth-btn register-btn" onclick="register()">Регистрация</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно избранного -->
+  <div id="favoritesModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('favoritesModal')">&times;</span>
+      <h2>Избранные товары</h2>
+      <div id="favoritesList" class="favorites-grid"></div>
+    </div>
+  </div>
+
+  <!-- Модальное окно обратной связи -->
+  <div id="contactModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('contactModal')">&times;</span>
+      <h2>Обратная связь</h2>
+      
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>support@kycshop.com</span>
+        </div>
+        <div class="contact-item">
+          <i class="fab fa-telegram"></i>
+          <span>@KYCShopSupport</span>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-clock"></i>
+          <span>Работаем 24/7</span>
+        </div>
+      </div>
+
+      <form class="contact-form" onsubmit="sendMessage(event)">
+        <div class="form-group">
+          <label for="contactName">Ваше имя:</label>
+          <input type="text" id="contactName" required>
+        </div>
+        <div class="form-group">
+          <label for="contactEmail">Email:</label>
+          <input type="email" id="contactEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="contactSubject">Тема:</label>
+          <input type="text" id="contactSubject" required>
+        </div>
+        <div class="form-group">
+          <label for="contactMessage">Сообщение:</label>
+          <textarea id="contactMessage" required></textarea>
+        </div>
+        <button type="submit" class="auth-btn login-btn" style="width: 100%;">Отправить сообщение</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно оформления заказа -->
+  <div id="checkoutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('checkoutModal')">&times;</span>
+      <h2>Оформление заказа</h2>
+      <div id="checkoutContent"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
