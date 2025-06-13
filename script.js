@@ -734,11 +734,11 @@ function openProductDetail(productId) {
 function selectPayment(method) {
   // Обновленные адреса для оплаты
   const addresses = {
-    bitcoin: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-    ethereum: '0x8ba1f109551bD432803012645Hac136c34C426c5',
-    usdt: 'TQn9Y2khEsLJW1ChVWFMSMeRDow5HFPVYW',
-    paypal: 'payments@kycshop.com'
-  };
+  bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
+  ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
+  usdt: 'TFsnebhTqCohGq34dWisnotcivikrJCn2G',
+  paypal: 'payments@kycshop.com'
+};
   
   const paymentAddress = document.getElementById('paymentAddress');
   const options = document.querySelectorAll('.crypto-option');
