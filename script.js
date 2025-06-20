@@ -17,7 +17,7 @@ const products = [
     category: "crypto",
     price: 55,
     rating: 4.7,
-    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/coinbase-icon.svg",
+    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/coinbase-logo-icon.svg",
     features: ["Level 2 KYC", "Bank Linked", "High Limits"],
     availability: "in-stock",
     description: "Верифицированный аккаунт Coinbase с подключенным банковским счетом"
@@ -61,7 +61,7 @@ const products = [
     category: "payment",
     price: 50,
     rating: 4.4,
-    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/alphabet-r-icon.svg",
+    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/revolut-icon.svg",
     features: ["Premium Plan", "Multi-Currency", "Crypto Trading"],
     availability: "in-stock",
     description: "Премиум аккаунт Revolut с доступом к криптоторговле"
