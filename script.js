@@ -6,7 +6,7 @@ const products = [
     category: "crypto",
     price: 45,
     rating: 4.8,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F0B90B'%3E%3Cpath d='M12 2l3.09 3.09L22 8l-3.09 3.09L22 14l-6.91 6.91L12 24l-3.09-3.09L2 16l3.09-3.09L2 10l6.91-6.91L12 2z'/%3E%3C/svg%3E",
+    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2500 2500'%3E%3Cpath fill='%23F3BA2F' d='M1249.5 0L1560.3 310.8 1249.5 621.6 938.7 310.8 1249.5 0ZM0 1249.5L310.8 938.7 621.6 1249.5 310.8 1560.3 0 1249.5ZM1249.5 938.7L1560.3 1249.5 1249.5 1560.3 938.7 1249.5 1249.5 938.7ZM1878.4 938.7L2189.2 1249.5 1878.4 1560.3 1567.6 1249.5 1878.4 938.7ZM1249.5 1878.4L1560.3 2189.2 1249.5 2500 938.7 2189.2 1249.5 1878.4Z'/%3E%3C/svg%3E",
     features: ["KYC Complete", "2FA", "API Access"],
     availability: "in-stock",
     description: "Полностью верифицированный аккаунт Binance с завершенной KYC процедурой"
