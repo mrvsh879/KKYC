@@ -17,7 +17,7 @@ const products = [
     category: "crypto",
     price: 55,
     rating: 4.7,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231652F0'%3E%3Ccircle cx='12' cy='12' r='12'/%3E%3Cpath fill='white' d='M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4z'/%3E%3C/svg%3E",
+    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/coinbase-icon.svg",
     features: ["Level 2 KYC", "Bank Linked", "High Limits"],
     availability: "in-stock",
     description: "Верифицированный аккаунт Coinbase с подключенным банковским счетом"
