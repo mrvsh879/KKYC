@@ -39,7 +39,7 @@ const products = [
     category: "payment",
     price: 35,
     rating: 4.5,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23003087'%3E%3Cpath d='M7.076 21.337H2.47a.64.64 0 0 1-.633-.74L4.944 2.053C5.036 1.369 5.629 1 6.341 1h7.365c3.075 0 5.051 1.438 5.554 4.037.218 1.122.122 2.326-.467 3.562-.589 1.234-1.66 2.219-3.659 2.219h-1.687L12.958 21.337H8.353a.64.64 0 0 1-.633-.74z'/%3E%3C/svg%3E",
+    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/paypal-icon.svg",
     features: ["Business Verified", "High Limits", "Multi-Currency"],
     availability: "in-stock",
     description: "Бизнес аккаунт PayPal с подтвержденной верификацией"
@@ -61,7 +61,7 @@ const products = [
     category: "payment",
     price: 50,
     rating: 4.4,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2z'/%3E%3Cpath d='M8 8h4c1.1 0 2 .9 2 2s-.9 2-2 2h-2v4h-2V8zm2 2v2h2V10h-2z'/%3E%3C/svg%3E",
+    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/alphabet-r-icon.svg",
     features: ["Premium Plan", "Multi-Currency", "Crypto Trading"],
     availability: "in-stock",
     description: "Премиум аккаунт Revolut с доступом к криптоторговле"
