@@ -182,7 +182,7 @@ const products = [
     category: "payment",
     price: 35,
     rating: 4.0,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300AC41'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'/%3E%3Cpath d='M7 12l3 3 6-6-1.5-1.5L10 12l-1.5-1.5z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/22/1/neteller-logo-png_seeklogo-220684.png",
     features: ["Premium Tier", "Instant Transfers", "Mobile App"],
     availability: "in-stock",
     description: "Премиум аккаунт Neteller с мгновенными переводами"
@@ -193,7 +193,7 @@ const products = [
     category: "payment",
     price: 30,
     rating: 3.9,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'%3E%3Cpath d='M12 2l3.09 3.09L22 8l-3.09 3.09L22 14l-6.91 6.91L12 22l-3.09-3.09L2 16l3.09-3.09L2 10l6.91-6.91L12 2z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/35/1/advcash-logo-png_seeklogo-350778.png",
     features: ["Gold Status", "Debit Card", "Multi-Currency"],
     availability: "in-stock",
     description: "Золотой аккаунт Advcash с дебетовой картой"
@@ -204,7 +204,7 @@ const products = [
     category: "payment",
     price: 25,
     rating: 3.8,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF6600'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/36/1/perfect-money-logo-png_seeklogo-367716.png",
     features: ["Full Verification", "USD/EUR/Gold", "API Access"],
     availability: "in-stock",
     description: "Полностью верифицированный аккаунт Perfect Money"
@@ -215,7 +215,7 @@ const products = [
     category: "payment",
     price: 20,
     rating: 3.7,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300AAFF'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3l1.09 3.26L16 9l-2.91 1.09L12 13l-1.09-2.91L8 9l2.91-1.09L12 5z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/61/1/webmoney-logo-png_seeklogo-610408.png",
     features: ["Passport Verified", "WMZ/WMR/WME", "Escrow Service"],
     availability: "in-stock",
     description: "Паспортифицированный аккаунт WebMoney"
