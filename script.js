@@ -72,7 +72,7 @@ const products = [
     category: "payment",
     price: 30,
     rating: 4.3,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300B9FF'%3E%3Cpath d='M12 2l3.09 3.09L22 8l-3.09 3.09L22 14l-6.91 6.91L12 22l-3.09-3.09L2 16l3.09-3.09L2 10l6.91-6.91L12 2z'/%3E%3C/svg%3E",
+    logo: "https://logotyp.us/file/wise.svg",
     features: ["Business Account", "Multi-Currency", "Low Fees"],
     availability: "in-stock",
     description: "Бизнес аккаунт Wise для международных переводов"
