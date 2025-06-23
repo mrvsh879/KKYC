@@ -685,13 +685,13 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <label for="countrySelector">Страна регистрации:</label>
-<select id="countrySelector" style="margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px;">
+        <label for="countrySelector" style="font-weight: 600; margin-top: 1rem; display: block; color: #444;">🌍 Выберите страну регистрации:</label>
+<select id="countrySelector" style="margin-bottom: 1rem; padding: 10px 15px; border-radius: 10px; border: 2px solid #667eea; background: #f8f9ff; font-weight: 600; color: #333; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
   <option value="СНГ">СНГ</option>
   <option value="ЕС">ЕС</option>
   <option value="Америка">Америка</option>
 </select>
-<div class="product-detail-price" id="productDetailPrice">$${product.price}</div>
+<div class="product-detail-price" id="productDetailPrice" style="font-size: 1.6rem; font-weight: 700; color: #667eea; margin: 0.5rem 0;">$${product.price}</div>
         <div class="product-description">
           ${product.description}
         </div>
