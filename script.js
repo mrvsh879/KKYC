@@ -61,7 +61,7 @@ const products = [
     category: "payment",
     price: 50,
     rating: 4.4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/6/60/Revolut_Logo.svg",
+    logo: "https://logotyp.us/file/revolut.svg",
     features: ["Premium Plan", "Multi-Currency", "Crypto Trading"],
     availability: "in-stock",
     description: "Премиум аккаунт Revolut с доступом к криптоторговле"
