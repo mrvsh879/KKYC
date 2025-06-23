@@ -789,29 +789,26 @@ function copyToClipboard(text) {
 
 // Добавление в корзину
 function addToCart(productId) {
-  const product = products.find(p => p.id === productId);
+const product = products.find(p => p.id === productId);
   if (!product) return;
-  
-  const existingItem = cart.find(item => item.id === productId);
-  
-  if (existingItem) {
-    existingItem.quantity += 1;
+  const selectedCountry = document.getElementById("countrySelector")?.value || "СНГ";
+  const countryMultipliers = {
+    "СНГ": 1.0,
+    "ЕС": 1.2,
+    "Америка": 1.5
+  };
+  const finalPrice = parseFloat((product.price * countryMultipliers[selectedCountry]).toFixed(2));
+
+  const existing = cart.find(item => item.id === productId && item.country === selectedCountry);
+  if (existing) {
+    existing.quantity += 1;
+  addToCartAnimation(productId);
   } else {
-    cart.push({
-      id: productId,
-      name: product.name,
-      price: product.price,
-      logo: product.logo,
-      quantity: 1
-    });
+    cart.push({ ...product, quantity: 1, country: selectedCountry, finalPrice });
+  addToCartAnimation(productId);
   }
-  
-  updateCartBadge();
-  updateCartSidebar();
-  saveUserData();
-  
-  // Показываем уведомление
-  showNotification(`${product.name} добавлен в корзину!`);
+  updateCart();
+  saveCart();
 }
 
 // Обновление значка корзины
@@ -838,7 +835,7 @@ function updateCartSidebar() {
       <img src="${item.logo}" alt="${item.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\\'/%3E%3C/svg%3E'">
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">$${item.price}</div>
+        <div class="cart-item-price">$${(item.finalPrice * item.quantity).toFixed(2)}</div>
         <div class="quantity-controls">
           <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
           <span>${item.quantity}</span>
@@ -872,8 +869,8 @@ function updateQuantity(productId, newQuantity) {
 }
 
 // Удаление из корзины
-function removeFromCart(productId) {
-  cart = cart.filter(item => item.id !== productId);
+function removeFromCart(productId, country) {
+  cart = cart.filter(item => !(item.id === productId && item.country === country));
   updateCartBadge();
   updateCartSidebar();
   saveUserData();
