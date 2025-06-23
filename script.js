@@ -803,9 +803,11 @@ const product = products.find(p => p.id === productId);
   if (existing) {
     existing.quantity += 1;
   addToCartAnimation(productId);
+  showNotification("Товар добавлен в корзину");
   } else {
     cart.push({ ...product, quantity: 1, country: selectedCountry, finalPrice });
   addToCartAnimation(productId);
+  showNotification("Товар добавлен в корзину");
   }
   updateCart();
   saveCart();
@@ -1236,4 +1238,23 @@ function showNotification(message) {
       }
     }, 300);
   }, 3000);
+}
+
+
+// Уведомление о добавлении
+function showNotification(message) {
+  let note = document.createElement("div");
+  note.textContent = message;
+  note.style.position = "fixed";
+  note.style.top = "20px";
+  note.style.right = "20px";
+  note.style.background = "linear-gradient(135deg, #667eea, #764ba2)";
+  note.style.color = "white";
+  note.style.padding = "10px 20px";
+  note.style.borderRadius = "10px";
+  note.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+  note.style.zIndex = 3000;
+  note.style.fontSize = "14px";
+  document.body.appendChild(note);
+  setTimeout(() => note.remove(), 2500);
 }
