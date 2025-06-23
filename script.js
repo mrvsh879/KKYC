@@ -1258,3 +1258,10 @@ function showNotification(message) {
   document.body.appendChild(note);
   setTimeout(() => note.remove(), 2500);
 }
+
+
+
+function deleteCartItem(productId, country) {
+  cart = cart.filter(item => !(item.id === productId && item.country === country));
+  updateCart();
+}
