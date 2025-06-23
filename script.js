@@ -50,7 +50,7 @@ const products = [
     category: "payment",
     price: 40,
     rating: 4.9,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23635BFF'%3E%3Cpath d='M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/29/1/stripe-logo-png_seeklogo-290635.png",
     features: ["API Ready", "KYC Complete", "Global Payments"],
     availability: "in-stock",
     description: "Готовый к работе аккаунт Stripe с полной верификацией"
@@ -270,7 +270,7 @@ const products = [
     category: "social",
     price: 20,
     rating: 4.2,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237289DA'%3E%3Cpath d='M20.222 0c1.406 0 2.54 1.137 2.607 2.475V24l-2.677-2.273-1.47-1.338-1.604-1.398.67 2.205H3.71c-1.402 0-2.54-1.065-2.54-2.476V2.48C1.17 1.142 2.31.003 3.715.003h16.5L20.222 0zm-6.118 5.683h-.03l-.202.2c2.073.6 3.076 1.537 3.076 1.537-1.336-.668-2.54-1.002-3.744-1.137-.87-.135-1.74-.064-2.475 0h-.2c-.47 0-1.47.2-2.81.735-.467.203-.735.336-.735.336s1.002-1.002 3.21-1.537l-.135-.135s-1.672-.064-3.477 1.27c0 0-1.805 3.144-1.805 7.02 0 0 1 1.74 3.743 1.806 0 0 .4-.533.805-1.002-1.54-.4-2.172-1.27-2.172-1.27s.135.068.335.2h.06c.03 0 .044.015.06.03v.006c.016.016.03.03.06.03.33.136.66.27.93.4.466.202 1.065.403 1.8.536.93.135 1.996.2 3.21 0 .6-.135 1.2-.267 1.8-.535.39-.2.87-.4 1.397-.737 0 0-.6.81-2.172 1.196.33.466.795 1 .795 1 2.744-.06 3.81-1.8 3.87-1.726 0-3.87-1.815-7.02-1.815-7.02-1.635-1.214-3.165-1.26-3.435-1.26l.056-.02zm.168 4.413c.703 0 1.27.6 1.27 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.34.002-.74.573-1.338 1.27-1.335zm-4.543 0c.7 0 1.266.6 1.266 1.335 0 .74-.57 1.34-1.27 1.34-.7 0-1.27-.6-1.27-1.34 0-.74.57-1.335 1.27-1.335z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/27/1/discord-logo-png_seeklogo-275121.png",
     features: ["Nitro Subscription", "Custom Emojis", "HD Streaming"],
     availability: "in-stock",
     description: "Аккаунт Discord с активной подпиской Nitro"
@@ -281,7 +281,7 @@ const products = [
     category: "crypto",
     price: 70,
     rating: 4.6,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300D4FF'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5 13h-4v4h-2v-4H7v-2h4V7h2v4h4v2z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/52/1/bitget-2024-blue-logo-png_seeklogo-526993.png",
     features: ["Copy Trading", "VIP 2", "Futures Access"],
     availability: "in-stock",
     description: "Аккаунт Bitget с доступом к копи-трейдингу"
@@ -292,7 +292,7 @@ const products = [
     category: "crypto",
     price: 40,
     rating: 4.1,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300E676'%3E%3Cpath d='M12 2l3.09 3.09L22 8l-3.09 3.09L22 14l-6.91 6.91L12 22l-3.09-3.09L2 16l3.09-3.09L2 10l6.91-6.91L12 2z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/46/1/mexc-global-logo-png_seeklogo-463569.png",
     features: ["VIP 1", "Low Fees", "New Listings"],
     availability: "in-stock",
     description: "VIP аккаунт MEXC с доступом к новым листингам"
@@ -303,7 +303,7 @@ const products = [
     category: "crypto",
     price: 55,
     rating: 4.3,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF6B35'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z'/%3E%3Cpath d='M8 8h8v2H8zm0 3h8v2H8zm0 3h5v2H8z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/53/1/htx-logo-png_seeklogo-534277.png",
     features: ["Pro Trading", "Margin Trading", "DeFi Access"],
     availability: "in-stock",
     description: "Профессиональный аккаунт HTX с маржинальной торговлей"
