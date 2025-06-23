@@ -450,6 +450,30 @@ let filteredProducts = [...products];
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
+  const modalScrollStyle = document.createElement('style');
+modalScrollStyle.textContent = `
+  #productModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    overflow-y: auto;
+    display: none;
+  }
+
+  #productModal .product-detail {
+    background: #fff;
+    margin: 2rem auto;
+    padding: 1rem;
+    border-radius: 10px;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+`;
+document.head.appendChild(modalScrollStyle);
+
   loadUserData();
   renderProducts();
   setupEventListeners();
