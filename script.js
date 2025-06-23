@@ -171,7 +171,7 @@ const products = [
     category: "payment",
     price: 40,
     rating: 4.1,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23862165'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4 11h-3v3h-2v-3H8v-2h3V8h2v3h3v2z'/%3E%3C/svg%3E",
+    logo: "https://images.seeklogo.com/logo-png/19/1/skrill-logo-png_seeklogo-193086.png",
     features: ["VIP Status", "Low Fees", "Crypto Support"],
     availability: "in-stock",
     description: "VIP аккаунт Skrill с поддержкой криптовалют"
