@@ -670,9 +670,21 @@ function updateResultsCount() {
 
 // Открытие детального просмотра товара
 function openProductDetail(productId) {
+  const countryMultipliers = {
+  СНГ: 1.0,
+  ЕС: 1.2,
+  Америка: 1.5
+};
+
+let selectedCountry = "СНГ";
+
+function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
-  
+
+  const basePrice = product.price;
+  const adjustedPrice = (basePrice * countryMultipliers[selectedCountry]).toFixed(2);
+
   const productDetail = document.getElementById('productDetail');
   productDetail.innerHTML = `
     <div class="product-detail">
@@ -685,7 +697,13 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <div class="product-detail-price">$${product.price}</div>
+        <label for="countrySelector" style="margin-top: 1rem; display: block;">Страна регистрации:</label>
+        <select id="countrySelector" style="margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px;">
+          ${Object.keys(countryMultipliers).map(c => `
+            <option value="${c}" ${c === selectedCountry ? 'selected' : ''}>${c}</option>
+          `).join('')}
+        </select>
+        <div class="product-detail-price" id="productDetailPrice">$${adjustedPrice}</div>
         <div class="product-description">
           ${product.description}
         </div>
@@ -702,7 +720,7 @@ function openProductDetail(productId) {
         </div>
       </div>
     </div>
-    
+
     <div class="crypto-payment">
       <h3>Способы оплаты</h3>
       <div class="crypto-options">
@@ -726,9 +744,17 @@ function openProductDetail(productId) {
       <div id="paymentAddress" class="payment-address" style="display: none;"></div>
     </div>
   `;
-  
+
+  const selector = document.getElementById("countrySelector");
+  selector.addEventListener("change", function () {
+    selectedCountry = this.value;
+    const newPrice = (basePrice * countryMultipliers[selectedCountry]).toFixed(2);
+    document.getElementById("productDetailPrice").textContent = `$${newPrice}`;
+  });
+
   openModal('productModal');
 }
+
 
 // Выбор способа оплаты
 function selectPayment(method) {
