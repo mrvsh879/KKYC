@@ -789,29 +789,24 @@ function copyToClipboard(text) {
 
 // Добавление в корзину
 function addToCart(productId) {
-  const product = products.find(p => p.id === productId);
+const product = products.find(p => p.id === productId);
   if (!product) return;
-  
-  const existingItem = cart.find(item => item.id === productId);
-  
-  if (existingItem) {
-    existingItem.quantity += 1;
+  const selectedCountry = document.getElementById("countrySelector")?.value || "СНГ";
+  const countryMultipliers = {
+    "СНГ": 1.0,
+    "ЕС": 1.2,
+    "Америка": 1.5
+  };
+  const finalPrice = parseFloat((product.price * countryMultipliers[selectedCountry]).toFixed(2));
+
+  const existing = cart.find(item => item.id === productId && item.country === selectedCountry);
+  if (existing) {
+    existing.quantity += 1;
   } else {
-    cart.push({
-      id: productId,
-      name: product.name,
-      price: product.price,
-      logo: product.logo,
-      quantity: 1
-    });
+    cart.push({ ...product, quantity: 1, country: selectedCountry, finalPrice });
   }
-  
-  updateCartBadge();
-  updateCartSidebar();
-  saveUserData();
-  
-  // Показываем уведомление
-  showNotification(`${product.name} добавлен в корзину!`);
+  updateCart();
+  saveCart();
 }
 
 // Обновление значка корзины
@@ -872,8 +867,8 @@ function updateQuantity(productId, newQuantity) {
 }
 
 // Удаление из корзины
-function removeFromCart(productId) {
-  cart = cart.filter(item => item.id !== productId);
+function removeFromCart(productId, country) {
+  cart = cart.filter(item => !(item.id === productId && item.country === country));
   updateCartBadge();
   updateCartSidebar();
   saveUserData();
