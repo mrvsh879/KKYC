@@ -149,7 +149,7 @@ const products = [
     category: "crypto",
     price: 50,
     rating: 4.3,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232EAAE0'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6 8h-3l-3 4-3-4H6l6 8 6-8z'/%3E%3C/svg%3E",
+    logo: "https://logotyp.us/file/huobi.svg",
     features: ["Global Access", "DeFi Staking", "NFT Trading"],
     availability: "in-stock",
     description: "Глобальный аккаунт Huobi с доступом к DeFi и NFT"
@@ -160,7 +160,7 @@ const products = [
     category: "crypto",
     price: 45,
     rating: 4.2,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364748B'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z'/%3E%3Cpath d='M16 12l-4-4v3H8v2h4v3z'/%3E%3C/svg%3E",
+    logo: "https://altcoinsbox.com/wp-content/uploads/2023/01/full-gate.io-logo.webp",
     features: ["Spot Trading", "Copy Trading", "Lending"],
     availability: "in-stock",
     description: "Продвинутый аккаунт Gate.io с копи-трейдингом"
