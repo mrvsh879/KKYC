@@ -685,13 +685,7 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <label for="countrySelector" style="font-weight: 600; margin-top: 1rem; display: block; color: #444;">🌍 Выберите страну регистрации:</label>
-<select id="countrySelector" style="margin-bottom: 1rem; padding: 10px 15px; border-radius: 10px; border: 2px solid #667eea; background: #f8f9ff; font-weight: 600; color: #333; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
-  <option value="СНГ">СНГ</option>
-  <option value="ЕС">ЕС</option>
-  <option value="Америка">Америка</option>
-</select>
-<div class="product-detail-price" id="productDetailPrice" style="font-size: 1.6rem; font-weight: 700; color: #667eea; margin: 0.5rem 0;">$${product.price}</div>
+        <div class="product-detail-price">$${product.price}</div>
         <div class="product-description">
           ${product.description}
         </div>
@@ -734,20 +728,6 @@ function openProductDetail(productId) {
   `;
   
   openModal('productModal');
-
-  const countryMultipliers = {
-    "СНГ": 1.0,
-    "ЕС": 1.2,
-    "Америка": 1.5
-  };
-  let selectedCountry = document.getElementById("countrySelector").value;
-  const basePrice = product.price;
-  document.getElementById("countrySelector").addEventListener("change", function () {
-    selectedCountry = this.value;
-    const newPrice = (basePrice * countryMultipliers[selectedCountry]).toFixed(2);
-    document.getElementById("productDetailPrice").textContent = `$${newPrice}`;
-  });
-
 }
 
 // Выбор способа оплаты
@@ -789,28 +769,29 @@ function copyToClipboard(text) {
 
 // Добавление в корзину
 function addToCart(productId) {
-const product = products.find(p => p.id === productId);
+  const product = products.find(p => p.id === productId);
   if (!product) return;
-  const selectedCountry = document.getElementById("countrySelector")?.value || "СНГ";
-  const countryMultipliers = {
-    "СНГ": 1.0,
-    "ЕС": 1.2,
-    "Америка": 1.5
-  };
-  const finalPrice = parseFloat((product.price * countryMultipliers[selectedCountry]).toFixed(2));
-
-  const existing = cart.find(item => item.id === productId && item.country === selectedCountry);
-  if (existing) {
-    existing.quantity += 1;
-  addToCartAnimation(productId);
-  showNotification("Товар добавлен в корзину");
+  
+  const existingItem = cart.find(item => item.id === productId);
+  
+  if (existingItem) {
+    existingItem.quantity += 1;
   } else {
-    cart.push({ ...product, quantity: 1, country: selectedCountry, finalPrice });
-  addToCartAnimation(productId);
-  showNotification("Товар добавлен в корзину");
+    cart.push({
+      id: productId,
+      name: product.name,
+      price: product.price,
+      logo: product.logo,
+      quantity: 1
+    });
   }
-  updateCart();
-  saveCart();
+  
+  updateCartBadge();
+  updateCartSidebar();
+  saveUserData();
+  
+  // Показываем уведомление
+  showNotification(`${product.name} добавлен в корзину!`);
 }
 
 // Обновление значка корзины
@@ -837,7 +818,7 @@ function updateCartSidebar() {
       <img src="${item.logo}" alt="${item.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\\'/%3E%3C/svg%3E'">
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div class="cart-item-price">$${(item.finalPrice * item.quantity).toFixed(2)}</div>
+        <div class="cart-item-price">$${item.price}</div>
         <div class="quantity-controls">
           <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
           <span>${item.quantity}</span>
@@ -871,8 +852,8 @@ function updateQuantity(productId, newQuantity) {
 }
 
 // Удаление из корзины
-function removeFromCart(productId, country) {
-  cart = cart.filter(item => !(item.id === productId && item.country === country));
+function removeFromCart(productId) {
+  cart = cart.filter(item => item.id !== productId);
   updateCartBadge();
   updateCartSidebar();
   saveUserData();
@@ -1238,30 +1219,4 @@ function showNotification(message) {
       }
     }, 300);
   }, 3000);
-}
-
-
-// Уведомление о добавлении
-function showNotification(message) {
-  let note = document.createElement("div");
-  note.textContent = message;
-  note.style.position = "fixed";
-  note.style.top = "20px";
-  note.style.right = "20px";
-  note.style.background = "linear-gradient(135deg, #667eea, #764ba2)";
-  note.style.color = "white";
-  note.style.padding = "10px 20px";
-  note.style.borderRadius = "10px";
-  note.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-  note.style.zIndex = 3000;
-  note.style.fontSize = "14px";
-  document.body.appendChild(note);
-  setTimeout(() => note.remove(), 2500);
-}
-
-
-
-function deleteCartItem(productId, country) {
-  cart = cart.filter(item => !(item.id === productId && item.country === country));
-  updateCart();
 }
