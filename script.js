@@ -685,7 +685,13 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <div class="product-detail-price">$${product.price}</div>
+        <label for="countrySelector">Страна регистрации:</label>
+<select id="countrySelector" style="margin-bottom: 1rem; padding: 0.5rem; border-radius: 8px;">
+  <option value="СНГ">СНГ</option>
+  <option value="ЕС">ЕС</option>
+  <option value="Америка">Америка</option>
+</select>
+<div class="product-detail-price" id="productDetailPrice">$${product.price}</div>
         <div class="product-description">
           ${product.description}
         </div>
@@ -728,6 +734,20 @@ function openProductDetail(productId) {
   `;
   
   openModal('productModal');
+
+  const countryMultipliers = {
+    "СНГ": 1.0,
+    "ЕС": 1.2,
+    "Америка": 1.5
+  };
+  let selectedCountry = document.getElementById("countrySelector").value;
+  const basePrice = product.price;
+  document.getElementById("countrySelector").addEventListener("change", function () {
+    selectedCountry = this.value;
+    const newPrice = (basePrice * countryMultipliers[selectedCountry]).toFixed(2);
+    document.getElementById("productDetailPrice").textContent = `$${newPrice}`;
+  });
+
 }
 
 // Выбор способа оплаты
