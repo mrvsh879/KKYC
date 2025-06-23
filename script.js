@@ -116,7 +116,7 @@ const products = [
     category: "crypto",
     price: 60,
     rating: 4.5,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23000000'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6 13h-5v5h-2v-5H6v-2h5V6h2v5h5v2z'/%3E%3C/svg%3E",
+    logo: "https://logotyp.us/file/okx.svg",
     features: ["VIP Level 2", "API Trading", "Futures Access"],
     availability: "in-stock",
     description: "Профессиональный трейдерский аккаунт OKX с VIP статусом"
@@ -127,7 +127,7 @@ const products = [
     category: "crypto",
     price: 85,
     rating: 4.8,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F7931A'%3E%3Cpath d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm-1 4v2h2V7h-2zm0 3v7h2v-7h-2z'/%3E%3C/svg%3E",
+    logo: "https://logotyp.us/file/bybit.svg",
     features: ["Institutional", "High Leverage", "Premium Support"],
     availability: "limited",
     description: "Институциональный аккаунт Bybit с высоким кредитным плечом"
@@ -138,7 +138,7 @@ const products = [
     category: "crypto",
     price: 55,
     rating: 4.4,
-    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300D4AA'%3E%3Cpath d='M12 2l3.09 3.09L22 8l-3.09 3.09L22 14l-6.91 6.91L12 22l-3.09-3.09L2 16l3.09-3.09L2 10l6.91-6.91L12 2z'/%3E%3C/svg%3E",
+    logo: "https://logotyp.us/file/kucoin.svg",
     features: ["VIP 3", "Trading Bot", "Margin Trading"],
     availability: "in-stock",
     description: "VIP аккаунт KuCoin с доступом к торговым ботам"
