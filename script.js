@@ -1083,19 +1083,19 @@ function openCheckout() {
     <div class="crypto-payment">
       <h3>Выберите способ оплаты</h3>
       <div class="crypto-options">
-        <div class="crypto-option" onclick="selectCheckoutPayment('bitcoin', event)">
+        <div class="crypto-option" onclick="selectCheckoutPayment('bitcoin')">
           <i class="fab fa-bitcoin" style="font-size: 2rem; color: #f7931a;"></i>
           <div>Bitcoin</div>
         </div>
-        <div class="crypto-option" onclick="selectCheckoutPayment('ethereum', event)">
+        <div class="crypto-option" onclick="selectCheckoutPayment('ethereum')">
           <i class="fab fa-ethereum" style="font-size: 2rem; color: #627eea;"></i>
           <div>Ethereum</div>
         </div>
-        <div class="crypto-option" onclick="selectCheckoutPayment('usdt', event)">
+        <div class="crypto-option" onclick="selectCheckoutPayment('usdt')">
           <div style="font-size: 2rem; color: #26a17b;">₮</div>
           <div>USDT</div>
         </div>
-        <div class="crypto-option" onclick="selectCheckoutPayment('paypal', event)">
+        <div class="crypto-option" onclick="selectCheckoutPayment('paypal')">
           <i class="fab fa-paypal" style="font-size: 2rem; color: #003087;"></i>
           <div>PayPal</div>
         </div>
@@ -1118,7 +1118,7 @@ function openCheckout() {
 }
 
 // Выбор способа оплаты при оформлении заказа
-function selectCheckoutPayment(method, event) {
+function selectCheckoutPayment(method) {
   const addresses = {
     bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
     ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
@@ -1219,87 +1219,4 @@ function showNotification(message) {
       }
     }, 300);
   }, 3000);
-}
-
-
-// === ДОБАВЛЕНО: глобальные переменные ===
-let selectedCurrency = null;
-let countdownInterval = null;
-let selectedExchangeRate = 0;
-
-// === ЗАМЕНА: selectCheckoutPayment ===
-function selectCheckoutPayment(method, event) {
-  const addresses = {
-    bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
-    ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
-    usdt: 'TFsnebhTqCohGq34dWisnotcivikrJCn2G',
-    paypal: 'payments@kycshop.com'
-  };
-
-  const paymentAddress = document.getElementById('checkoutPaymentAddress');
-  const options = document.querySelectorAll('#checkoutModal .crypto-option');
-
-  options.forEach(option => option.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-
-  selectedCurrency = method;
-  fetchExchangeRate(method);
-
-  paymentAddress.style.display = 'block';
-  paymentAddress.innerHTML = `
-    <strong>Адрес для оплаты:</strong><br>
-    ${addresses[method]}
-    <button onclick="copyToClipboard('${addresses[method]}')" style="margin-left: 10px; padding: 5px 10px;">Копировать</button>
-    <div id="convertedAmount" style="margin-top: 1rem; font-weight: bold;"></div>
-    <div id="countdownTimer" style="margin-top: 0.5rem; color: red;"></div>
-  `;
-}
-
-// === ДОБАВЛЕНО: fetchExchangeRate ===
-function fetchExchangeRate(method) {
-  const rates = {
-    bitcoin: 65000,
-    ethereum: 3800,
-    usdt: 1,
-    paypal: 1
-  };
-
-  selectedExchangeRate = rates[method];
-  updateConvertedAmount();
-  startCountdown(15 * 60);
-}
-
-// === ДОБАВЛЕНО: updateConvertedAmount ===
-function updateConvertedAmount() {
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const converted = (total / selectedExchangeRate).toFixed(6);
-  const unit = selectedCurrency === 'paypal' ? 'USD' : selectedCurrency.toUpperCase();
-  document.getElementById('convertedAmount').innerHTML = `
-    💱 К оплате: <span>${converted} ${unit}</span>
-  `;
-}
-
-// === ДОБАВЛЕНО: startCountdown ===
-function startCountdown(seconds) {
-  clearInterval(countdownInterval);
-
-  const timerElement = document.getElementById('countdownTimer');
-
-  function updateTimer() {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    timerElement.textContent = \`⏳ Время для оплаты: \${minutes}:\${secs < 10 ? '0' : ''}\${secs}\`;
-
-    if (seconds <= 0) {
-      clearInterval(countdownInterval);
-      timerElement.textContent = '⏰ Время истекло! Повторите выбор способа оплаты.';
-      document.getElementById('convertedAmount').textContent = '';
-      selectedCurrency = null;
-    }
-
-    seconds--;
-  }
-
-  updateTimer();
-  countdownInterval = setInterval(updateTimer, 1000);
 }
