@@ -933,6 +933,21 @@ function toggleCart() {
   
   if (cartSidebar.classList.contains('open')) {
     updateCartSidebar();
+const closeButton = document.createElement('button');
+  closeButton.innerHTML = '&times;';
+  closeButton.style.cssText = `
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    z-index: 10;
+  `;
+  closeButton.addEventListener('click', closeCart);
+  cartSidebar.appendChild(closeButton);
   }
 }
 
