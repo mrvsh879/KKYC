@@ -673,7 +673,10 @@ function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
   
-  const productDetail = document.getElementById('productDetail');
+  
+const productDetail = document.getElementById('productDetail');
+let selectedCountry = 'СНГ';
+
   productDetail.innerHTML = `
     <div class="product-detail">
       <div class="product-detail-image">
@@ -1219,4 +1222,43 @@ function showNotification(message) {
       }
     }, 300);
   }, 3000);
+}
+function updateCountryPrice(country) {
+  selectedCountry = country;
+  const multiplier = { 'СНГ': 1, 'ЕС': 1.25, 'Америка': 1.5 };
+  const productPrice = currentProduct.price;
+  const adjusted = (productPrice * multiplier[country]).toFixed(2);
+  document.getElementById("priceDisplay").innerText = "$" + adjusted;
+}
+
+function deleteCartItem(productId, country) {
+  cart = cart.filter(item => !(item.id === productId && item.country === country));
+  updateCart();
+}
+
+function startPaymentTimer(durationMinutes = 15) {
+  const endTime = Date.now() + durationMinutes * 60 * 1000;
+  const timerElement = document.getElementById('checkoutTimer');
+
+  function update() {
+    const remaining = Math.max(0, endTime - Date.now());
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+    timerElement.innerText = `Осталось времени на оплату: ${minutes}м ${seconds}с`;
+    if (remaining <= 0) clearInterval(interval);
+  }
+
+  update();
+  const interval = setInterval(update, 1000);
+}
+
+async function fetchCryptoRate(crypto = 'bitcoin') {
+  try {
+    const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${crypto}&vs_currencies=usd`);
+    const data = await res.json();
+    const rate = data[crypto].usd;
+    document.getElementById('cryptoRate').innerText = `1 ${crypto.toUpperCase()} ≈ $${rate}`;
+  } catch (err) {
+    document.getElementById('cryptoRate').innerText = 'Не удалось загрузить курс';
+  }
 }
