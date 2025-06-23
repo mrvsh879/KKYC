@@ -28,7 +28,7 @@ const products = [
     category: "crypto",
     price: 65,
     rating: 4.6,
-    logo: "https://worldvectorlogo.com/logo/kraken-2",
+    logo: "https://cryptologos.cc/logos/kraken-kraken-logo.svg?v=026",
     features: ["Pro Trading", "KYC Tier 4", "Margin Trading"],
     availability: "limited",
     description: "Профессиональный аккаунт Kraken с максимальным уровнем верификации"
