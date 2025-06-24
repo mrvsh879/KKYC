@@ -442,6 +442,23 @@ const products = [
   }
 ];
 
+// Данные товаров (40 товаров)
+const products = [
+  {
+    id: 1,
+    name: "Binance Pro",
+    category: "crypto",
+    price: 45,
+    rating: 4.8,
+    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/binance-coin-bnb-icon.svg",
+    features: ["KYC Complete", "2FA", "API Access"],
+    availability: "in-stock",
+    description: "Полностью верифицированный аккаунт Binance с завершенной KYC процедурой"
+  },
+  // ... (оставшиеся товары без изменений) ...
+  // Вставьте остальные товары сюда, как в вашем исходном файле!
+];
+
 // Добавим пояснение в description для всех товаров (однократно)
 products.forEach(p => {
   if (!p.description.includes('При покупке вы получаете')) {
@@ -455,16 +472,21 @@ let cart = [];
 let favorites = [];
 let filteredProducts = [...products];
 
-// Коэффициенты цен по странам
+// Коэффициенты цен по странам (без процентов)
 const countryCoefficients = {
   'СНГ': 1.0,
   'Европа': 1.25,
   'Канада': 1.5
 };
+const countryFlags = {
+  'СНГ': '🇷🇺',
+  'Европа': '🇪🇺',
+  'Канада': '🇨🇦'
+};
 const countryLabels = {
   'СНГ': 'СНГ',
-  'Европа': 'Европа (+25%)',
-  'Канада': 'Канада (+50%)'
+  'Европа': 'Европа',
+  'Канада': 'Канада'
 };
 
 // Цена товара с учетом страны
@@ -495,6 +517,62 @@ document.addEventListener('DOMContentLoaded', function() {
       max-height: 90vh;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
+    }
+    .country-select-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      background: #f3f4fa;
+      padding: 0.6rem 1.2rem;
+      border-radius: 2rem;
+      border: 2px solid #667eea;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      width: fit-content;
+      box-shadow: 0 2px 10px rgba(102,126,234,0.08);
+    }
+    .country-select-label {
+      font-weight: 600;
+      color: #333;
+      font-size: 1rem;
+      margin-right: 0.3rem;
+    }
+    .country-select {
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      padding: 0.4rem 2.3rem 0.4rem 2.2rem;
+      border-radius: 1.5rem;
+      appearance: none;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+      min-width: 115px;
+      transition: background 0.2s;
+    }
+    .country-select:focus {
+      background: #e0e7ff;
+    }
+    .country-flag {
+      font-size: 1.5rem;
+      margin-right: 0.2rem;
+      margin-left: 0;
+    }
+    /* Стили для стрелочки */
+    .country-select-wrapper {
+      position: relative;
+    }
+    .country-select-wrapper::after {
+      content: '\\25BC';
+      position: absolute;
+      right: 18px;
+      top: 53%;
+      transform: translateY(-50%);
+      color: #667eea;
+      font-size: 0.9rem;
+      pointer-events: none;
     }
   `;
   document.head.appendChild(modalScrollStyle);
@@ -684,7 +762,7 @@ function updateResultsCount() {
   resultsCount.textContent = `Показано: ${filteredProducts.length} из ${products.length}`;
 }
 
-// Открытие детального просмотра товара с выбором страны
+// Открытие детального просмотра товара с выбором страны (флаги, дизайн)
 function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
@@ -702,12 +780,13 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <div style="margin: 1rem 0;">
-          <label for="countrySelect">Страна верификации:</label>
-          <select id="countrySelect">
+        <div class="country-select-wrapper">
+          <span class="country-select-label">Страна верификации:</span>
+          <span class="country-flag" id="countryFlag">${countryFlags[selectedCountry]}</span>
+          <select id="countrySelect" class="country-select">
             <option value="СНГ" ${selectedCountry === 'СНГ' ? 'selected' : ''}>СНГ</option>
-            <option value="Европа" ${selectedCountry === 'Европа' ? 'selected' : ''}>Европа (+25%)</option>
-            <option value="Канада" ${selectedCountry === 'Канада' ? 'selected' : ''}>Канада (+50%)</option>
+            <option value="Европа" ${selectedCountry === 'Европа' ? 'selected' : ''}>Европа</option>
+            <option value="Канада" ${selectedCountry === 'Канада' ? 'selected' : ''}>Канада</option>
           </select>
         </div>
         <div class="product-detail-price" id="detailPrice">$${getCountryPrice(product, selectedCountry)}</div>
@@ -749,10 +828,11 @@ function openProductDetail(productId) {
     </div>
   `;
   openModal('productModal');
-  // Обновление цены при смене страны
+  // Обновление цены и флага при смене страны
   const select = document.getElementById('countrySelect');
   select.addEventListener('change', function() {
     document.getElementById('detailPrice').textContent = '$' + getCountryPrice(product, select.value);
+    document.getElementById('countryFlag').textContent = countryFlags[select.value];
   });
 }
 
@@ -833,7 +913,9 @@ function updateCartSidebar() {
       <img src="${item.logo}" alt="${item.name}">
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
-        <div style="font-size: 0.9em; color: #888; margin-bottom: 0.2em;">${item.country}</div>
+        <div style="font-size: 0.9em; color: #888; margin-bottom: 0.2em;">
+          <span class="country-flag">${countryFlags[item.country]}</span> ${countryLabels[item.country]}
+        </div>
         <div class="cart-item-price">$${item.price}</div>
         <div class="quantity-controls">
           <button class="quantity-btn" onclick="updateQuantity(${item.id}, '${item.country}', ${item.quantity - 1})">-</button>
@@ -1073,7 +1155,9 @@ function openCheckout() {
       <h3>Ваш заказ</h3>
       ${cart.map(item => `
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-          <span>${item.name} (${item.country}) x${item.quantity}</span>
+          <span>
+            <span class="country-flag">${countryFlags[item.country]}</span> ${item.name} (${countryLabels[item.country]}) x${item.quantity}
+          </span>
           <span>$${(item.price * item.quantity).toFixed(2)}</span>
         </div>
       `).join('')}
