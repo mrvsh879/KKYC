@@ -476,6 +476,14 @@ const countryLabels = {
   'Канада': 'Канада'
 };
 
+// updateCartBadge ЗДЕСЬ ---
+function updateCartBadge() {
+  const badge = document.getElementById('cartBadge');
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  badge.textContent = totalItems;
+  badge.style.display = totalItems > 0 ? 'flex' : 'none';
+}
+
 // --- Получение курса монеты через CoinGecko ---
 async function fetchPaymentRate(symbol) {
   let apiUrl = '';
