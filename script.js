@@ -476,15 +476,23 @@ const countryLabels = {
   'Канада': 'Канада'
 };
 
-// updateCartBadge ЗДЕСЬ ---
+// --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
 function updateCartBadge() {
   const badge = document.getElementById('cartBadge');
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  badge.textContent = totalItems;
-  badge.style.display = totalItems > 0 ? 'flex' : 'none';
+  if (badge) {
+    badge.textContent = totalItems;
+    badge.style.display = totalItems > 0 ? 'flex' : 'none';
+  }
 }
-
-// ВСТАВЬТЕ СЮДА:
+function getCategoryName(category) {
+  const categories = {
+    'crypto': 'Криптоплатформы',
+    'payment': 'Платежные системы',
+    'social': 'Социальные сети'
+  };
+  return categories[category] || category;
+}
 function getAvailabilityText(availability) {
   const texts = {
     'in-stock': 'В наличии',
@@ -492,6 +500,57 @@ function getAvailabilityText(availability) {
     'out-of-stock': 'Нет в наличии'
   };
   return texts[availability] || availability;
+}
+function generateStars(rating) {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+  let stars = '';
+  for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star star"></i>';
+  if (hasHalfStar) stars += '<i class="fas fa-star-half-alt star"></i>';
+  for (let i = 0; i < 5 - fullStars - (hasHalfStar ? 1 : 0); i++) stars += '<i class="far fa-star star"></i>';
+  return stars;
+}
+function updateResultsCount() {
+  const resultsCount = document.getElementById('resultsCount');
+  if (resultsCount)
+    resultsCount.textContent = `Показано: ${filteredProducts.length} из ${products.length}`;
+}
+function handleSearch() {
+  applyFilters();
+}
+function applyFilters() {
+  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+  const categoryFilter = document.getElementById('categoryFilter').value;
+  const priceFilter = document.getElementById('priceFilter').value;
+  const sortBy = document.getElementById('sortBy').value;
+  filteredProducts = products.filter(product => {
+    const matchesSearch = !searchTerm ||
+      product.name.toLowerCase().includes(searchTerm) ||
+      product.features.some(feature => feature.toLowerCase().includes(searchTerm)) ||
+      getCategoryName(product.category).toLowerCase().includes(searchTerm);
+    const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+    let matchesPrice = true;
+    if (priceFilter !== 'all') {
+      const [min, max] = priceFilter.split('-').map(p => p === '+' ? Infinity : parseInt(p));
+      matchesPrice = product.price >= min && (max === undefined || product.price <= max);
+    }
+    return matchesSearch && matchesCategory && matchesPrice;
+  });
+  filteredProducts.sort((a, b) => {
+    switch (sortBy) {
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'price-low':
+        return a.price - b.price;
+      case 'price-high':
+        return b.price - a.price;
+      case 'rating':
+        return b.rating - a.rating;
+      default:
+        return 0;
+    }
+  });
+  renderProducts();
 }
 
 // --- Получение курса монеты через CoinGecko ---
@@ -531,9 +590,11 @@ function startPaymentTimer() {
 }
 function updateTimerDisplay() {
   const timerBlock = document.getElementById('timerBlock');
-  const min = Math.floor(paymentTimeLeft / 60);
-  const sec = paymentTimeLeft % 60;
-  timerBlock.textContent = `Время для оплаты: ${min}:${sec < 10 ? '0'+sec : sec}`;
+  if (timerBlock) {
+    const min = Math.floor(paymentTimeLeft / 60);
+    const sec = paymentTimeLeft % 60;
+    timerBlock.textContent = `Время для оплаты: ${min}:${sec < 10 ? '0'+sec : sec}`;
+  }
 }
 
 // --- Цена товара с учетом страны ---
@@ -662,6 +723,7 @@ function setupEventListeners() {
 // --- Рендеринг товаров ---
 function renderProducts() {
   const productGrid = document.getElementById('productGrid');
+  if (!productGrid) return;
   if (filteredProducts.length === 0) {
     productGrid.innerHTML = `
       <div class="no-results">
@@ -827,8 +889,229 @@ function addToCart(productId, country = 'СНГ') {
   showNotification(`${product.name} (${country}) добавлен в корзину!`);
 }
 
-// --- КОРЗИНА И ИЗБРАННОЕ (оставшиеся функции без изменений) ---
-// ... (все функции updateCartBadge, updateCartSidebar, updateQuantity, removeFromCart, toggleFavorite, updateFavoritesList, toggleCart, closeCart, openModal, closeModal, updateProfileContent, login, register, logout, sendMessage, generateStars, getCategoryName, getAvailabilityText, handleSearch, applyFilters, updateResultsCount) ...
+// --- КОРЗИНА И ИЗБРАННОЕ ---
+function updateCartSidebar() {
+  const cartItems = document.getElementById('cartItems');
+  const cartTotal = document.getElementById('cartTotal');
+  if (!cartItems || !cartTotal) return;
+  if (cart.length === 0) {
+    cartItems.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">Корзина пуста</div>';
+    cartTotal.textContent = '0.00';
+    return;
+  }
+  cartItems.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.logo}" alt="${item.name}">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div style="font-size: 0.9em; color: #888; margin-bottom: 0.2em;">
+          <span class="country-flag">${countryFlags[item.country]}</span> ${countryLabels[item.country]}
+        </div>
+        <div class="cart-item-price">$${item.price}</div>
+        <div class="quantity-controls">
+          <button class="quantity-btn" onclick="updateQuantity(${item.id}, '${item.country}', ${item.quantity - 1})">-</button>
+          <span>${item.quantity}</span>
+          <button class="quantity-btn" onclick="updateQuantity(${item.id}, '${item.country}', ${item.quantity + 1})">+</button>
+          <button class="quantity-btn" onclick="removeFromCart(${item.id}, '${item.country}')" style="background: #ff4757; color: white; margin-left: 10px;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  cartTotal.textContent = total.toFixed(2);
+}
+function updateQuantity(productId, country, newQuantity) {
+  if (newQuantity <= 0) {
+    removeFromCart(productId, country);
+    return;
+  }
+  const item = cart.find(item => item.id === productId && item.country === country);
+  if (item) {
+    item.quantity = newQuantity;
+    updateCartBadge();
+    updateCartSidebar();
+    saveUserData();
+  }
+}
+function removeFromCart(productId, country) {
+  cart = cart.filter(item => !(item.id === productId && item.country === country));
+  updateCartBadge();
+  updateCartSidebar();
+  saveUserData();
+}
+function toggleFavorite(productId) {
+  const index = favorites.indexOf(productId);
+  if (index > -1) {
+    favorites.splice(index, 1);
+  } else {
+    favorites.push(productId);
+  }
+  saveUserData();
+  renderProducts();
+  updateFavoritesList();
+}
+function updateFavoritesList() {
+  const favoritesList = document.getElementById('favoritesList');
+  if (!favoritesList) return;
+  if (favorites.length === 0) {
+    favoritesList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">Нет избранных товаров</div>';
+    return;
+  }
+  const favoriteProducts = products.filter(product => favorites.includes(product.id));
+  favoritesList.innerHTML = favoriteProducts.map(product => `
+    <div class="favorite-item">
+      <img src="${product.logo}" alt="${product.name}">
+      <div class="favorite-item-info">
+        <div class="favorite-item-name">${product.name}</div>
+        <div class="favorite-item-price">$${product.price}</div>
+      </div>
+      <button class="remove-favorite" onclick="toggleFavorite(${product.id})">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `).join('');
+}
+function toggleCart() {
+  const cartSidebar = document.getElementById('cartSidebar');
+  const cartOverlay = document.getElementById('cartOverlay');
+  if (!cartSidebar || !cartOverlay) return;
+  cartSidebar.classList.toggle('open');
+  cartOverlay.classList.toggle('show');
+  if (cartSidebar.classList.contains('open')) {
+    updateCartSidebar();
+    if (!document.getElementById('closeCartBtn')) {
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '&times;';
+      closeButton.id = 'closeCartBtn';
+      closeButton.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        background: none;
+        border: none;
+        color: #333;
+        cursor: pointer;
+        z-index: 10;
+      `;
+      closeButton.addEventListener('click', closeCart);
+      cartSidebar.appendChild(closeButton);
+    }
+  }
+}
+function closeCart() {
+  const cartSidebar = document.getElementById('cartSidebar');
+  const cartOverlay = document.getElementById('cartOverlay');
+  if (!cartSidebar || !cartOverlay) return;
+  cartSidebar.classList.remove('open');
+  cartOverlay.classList.remove('show');
+}
+function openModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.style.display = 'block';
+  if (modalId === 'favoritesModal') {
+    updateFavoritesList();
+  } else if (modalId === 'profileModal') {
+    updateProfileContent();
+  }
+}
+function closeModal(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  modal.style.display = 'none';
+}
+function updateProfileContent() {
+  const profileContent = document.getElementById('profileContent');
+  if (!profileContent) return;
+  if (currentUser) {
+    profileContent.innerHTML = `
+      <div class="user-info">
+        <div class="user-avatar">
+          ${currentUser.name.charAt(0).toUpperCase()}
+        </div>
+        <h3>${currentUser.name}</h3>
+        <p>${currentUser.email}</p>
+        <button class="auth-btn login-btn" onclick="logout()" style="width: 100%; margin-top: 1rem;">
+          Выйти
+        </button>
+      </div>
+    `;
+  } else {
+    profileContent.innerHTML = `
+      <div class="auth-form">
+        <h2>Вход в аккаунт</h2>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" placeholder="Введите ваш email">
+        </div>
+        <div class="form-group">
+          <label for="password">Пароль:</label>
+          <input type="password" id="password" placeholder="Введите пароль">
+        </div>
+        <div class="auth-buttons">
+          <button class="auth-btn login-btn" onclick="login()">Войти</button>
+          <button class="auth-btn register-btn" onclick="register()">Регистрация</button>
+        </div>
+      </div>
+    `;
+  }
+}
+function login() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  if (!email || !password) {
+    alert('Пожалуйста, заполните все поля');
+    return;
+  }
+  currentUser = {
+    name: email.split('@')[0],
+    email: email
+  };
+  saveUserData();
+  closeModal('profileModal');
+  showNotification('Вы успешно вошли в систему!');
+}
+function register() {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  if (!email || !password) {
+    alert('Пожалуйста, заполните все поля');
+    return;
+  }
+  currentUser = {
+    name: email.split('@')[0],
+    email: email
+  };
+  saveUserData();
+  closeModal('profileModal');
+  showNotification('Регистрация прошла успешно!');
+}
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('kycShopUser');
+  closeModal('profileModal');
+  showNotification('Вы вышли из системы');
+}
+function sendMessage(event) {
+  event.preventDefault();
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const subject = document.getElementById('contactSubject').value;
+  const message = document.getElementById('contactMessage').value;
+  if (!name || !email || !subject || !message) {
+    alert('Пожалуйста, заполните все поля');
+    return;
+  }
+  showNotification('Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.');
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactSubject').value = '';
+  document.getElementById('contactMessage').value = '';
+  closeModal('contactModal');
+}
 
 // --- Окно оплаты с курсом и таймером ---
 async function selectCheckoutPayment(method) {
@@ -926,7 +1209,6 @@ function openCheckout() {
   startPaymentTimer();
 }
 
-// --- Остальные функции: copyToClipboard, completeOrder, showNotification ... (оставить без изменений) ---
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     alert('Адрес скопирован в буфер обмена!');
