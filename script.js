@@ -1193,7 +1193,7 @@ function completeOrder() {
     alert('Пожалуйста, выберите способ оплаты');
     return;
   }
-  showNotification('Заказ оформлен! Инструкции по оплате отправлены на ваш email.');
+  showNotification('Заказ оформлен!После зачисления средств заказ будет отправлен на email.');
   cart = [];
   updateCartBadge();
   updateCartSidebar();
