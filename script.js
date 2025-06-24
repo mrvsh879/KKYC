@@ -442,13 +442,6 @@ const products = [
   }
 ];
 
-// Добавление информации о выдаче документов
-products.forEach(p => {
-  if (!p.description.includes('При покупке вы получаете')) {
-    p.description += '<br><strong>При покупке вы получаете: документы, логи, прокси.</strong>';
-  }
-});
-
 // --- Глобальные переменные для корзины, пользователя, таймера и курса ---
 let currentUser = null;
 let cart = [];
