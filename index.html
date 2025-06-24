@@ -1134,6 +1134,35 @@
       "Европа": "🇪🇺",
       "Канада": "🇨🇦"
     };
+
+    function updatePrice(id) {
+      const country = document.getElementById("countrySelect").value;
+      const basePrice = products.find(p => p.id === id).price;
+      const finalPrice = basePrice * countryMultipliers[country];
+      document.getElementById("productPrice").innerText = `$${finalPrice.toFixed(2)}`;
+    }
+
+    function openProduct(id) {
+      const product = products.find(p => p.id === id);
+      const detail = document.getElementById("productDetail");
+      detail.innerHTML = `
+        <div class="product-detail">
+          <div class="product-detail-image">
+            <img src="${product.logo}" alt="">
+          </div>
+          <div class="product-detail-info">
+            <h2>${product.name}</h2>
+            <div class="product-description">${product.description}</div>
+            <label for="countrySelect">Страна верификации:</label>
+            <select id="countrySelect" onchange="updatePrice(${id})">
+              ${Object.keys(countryMultipliers).map(c => `<option value="${c}">${countryFlags[c]} ${c}</option>`).join("")}
+            </select>
+            <div class="product-detail-price" id="productPrice">$${product.price.toFixed(2)}</div>
+            <button class="product-button" onclick="addToCart(${id})">Добавить в корзину</button>
+          </div>
+        </div>`;
+      document.getElementById("productModal").style.display = "block";
+    }
   </script>
 
   <script src="script.js"></script>
