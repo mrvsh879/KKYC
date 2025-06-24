@@ -484,6 +484,16 @@ function updateCartBadge() {
   badge.style.display = totalItems > 0 ? 'flex' : 'none';
 }
 
+// ВСТАВЬТЕ СЮДА:
+function getAvailabilityText(availability) {
+  const texts = {
+    'in-stock': 'В наличии',
+    'limited': 'Ограничено',
+    'out-of-stock': 'Нет в наличии'
+  };
+  return texts[availability] || availability;
+}
+
 // --- Получение курса монеты через CoinGecko ---
 async function fetchPaymentRate(symbol) {
   let apiUrl = '';
