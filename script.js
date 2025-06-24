@@ -226,7 +226,7 @@ const products = [
     category: "social",
     price: 45,
     rating: 4.5,
-   logo: "https://images.seeklogo.com/logo-png/29/1/facebook-icon-circle-logo-png_seeklogo-290323.png",
+    logo: "https://images.seeklogo.com/logo-png/29/1/facebook-icon-circle-logo-png_seeklogo-290323.png",
     features: ["Business Manager", "Ad Account", "50+ Pages"],
     availability: "in-stock",
     description: "Бизнес менеджер Facebook с рекламным аккаунтом"
@@ -442,68 +442,62 @@ const products = [
   }
 ];
 
-// Состояние приложения
-let currentUser = null;
-let cart = [];
-let favorites = [];
-let filteredProducts = [...products];
-
-// Инициализация при загрузке страницы
-
-// --- ДОБАВЛЕНО: КОЭФФИЦИЕНТЫ ПО СТРАНАМ ---
-const countryCoefficients = {
-  'СНГ': 1.0,
-  'Европа': 1.2,
-  'Америка': 1.4
-};
-
-// --- ДОБАВЛЕНО: ДОБАВЛЕНИЕ В ОПИСАНИЕ ---
+// Добавим пояснение в description для всех товаров (однократно)
 products.forEach(p => {
   if (!p.description.includes('При покупке вы получаете')) {
     p.description += '<br><strong>При покупке вы получаете: документы, логи, прокси.</strong>';
   }
 });
 
-// --- ДОБАВЛЕНО: ОБНОВЛЕНИЕ ЦЕНЫ ПРИ ВЫБОРЕ СТРАНЫ ---
-function updateProductPrice(selectElement, productId) {
-  const product = products.find(p => p.id === productId);
-  const selectedCountry = selectElement.value;
-  const priceElement = document.getElementById(`price-${productId}`);
+// Состояние приложения
+let currentUser = null;
+let cart = [];
+let favorites = [];
+let filteredProducts = [...products];
 
-  if (!product.originalPrice) {
-    product.originalPrice = product.price;
-  }
+// Коэффициенты цен по странам
+const countryCoefficients = {
+  'СНГ': 1.0,
+  'Европа': 1.25,
+  'Канада': 1.5
+};
+const countryLabels = {
+  'СНГ': 'СНГ',
+  'Европа': 'Европа (+25%)',
+  'Канада': 'Канада (+50%)'
+};
 
-  product.selectedCountry = selectedCountry;
-  product.price = +(product.originalPrice * countryCoefficients[selectedCountry]).toFixed(2);
-  priceElement.textContent = `$${product.price}`;
+// Цена товара с учетом страны
+function getCountryPrice(product, country) {
+  const basePrice = product.originalPrice || product.price;
+  let coeff = countryCoefficients[country] || 1.0;
+  return +(basePrice * coeff).toFixed(2);
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
+  // Стили для модального окна товара (скролл)
   const modalScrollStyle = document.createElement('style');
-modalScrollStyle.textContent = `
-  #productModal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
-    overflow-y: auto;
-    display: none;
-  }
-
-  #productModal .product-detail {
-    background: #fff;
-    margin: 2rem auto;
-    padding: 1rem;
-    border-radius: 10px;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-`;
-document.head.appendChild(modalScrollStyle);
+  modalScrollStyle.textContent = `
+    #productModal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      overflow-y: auto;
+      display: none;
+    }
+    #productModal .product-detail {
+      background: #fff;
+      margin: 2rem auto;
+      padding: 1rem;
+      border-radius: 10px;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  `;
+  document.head.appendChild(modalScrollStyle);
 
   loadUserData();
   renderProducts();
@@ -519,12 +513,10 @@ function loadUserData() {
   if (savedUser) {
     currentUser = JSON.parse(savedUser);
   }
-  
   if (savedCart) {
     cart = JSON.parse(savedCart);
     updateCartBadge();
   }
-  
   if (savedFavorites) {
     favorites = JSON.parse(savedFavorites);
   }
@@ -541,24 +533,17 @@ function saveUserData() {
 
 // Настройка обработчиков событий
 function setupEventListeners() {
-  // Поиск
   document.getElementById('searchInput').addEventListener('input', handleSearch);
-  
-  // Фильтры
   document.getElementById('categoryFilter').addEventListener('change', applyFilters);
   document.getElementById('priceFilter').addEventListener('change', applyFilters);
   document.getElementById('sortBy').addEventListener('change', applyFilters);
-  
-  // Кнопки в заголовке
   document.getElementById('cartBtn').addEventListener('click', toggleCart);
   document.getElementById('profileBtn').addEventListener('click', () => openModal('profileModal'));
   document.getElementById('favoritesBtn').addEventListener('click', () => openModal('favoritesModal'));
   document.getElementById('contactBtn').addEventListener('click', () => openModal('contactModal'));
-  
-  // Закрытие корзины
   document.getElementById('cartOverlay').addEventListener('click', closeCart);
-  
-  // Модальные окна
+
+  // Закрытие модальных окон по клику вне области
   window.addEventListener('click', function(event) {
     if (event.target.classList.contains('modal')) {
       event.target.style.display = 'none';
@@ -569,7 +554,6 @@ function setupEventListeners() {
 // Рендеринг товаров
 function renderProducts() {
   const productGrid = document.getElementById('productGrid');
-  
   if (filteredProducts.length === 0) {
     productGrid.innerHTML = `
       <div class="no-results">
@@ -580,46 +564,38 @@ function renderProducts() {
     `;
     return;
   }
-  
   productGrid.innerHTML = filteredProducts.map(product => `
     <div class="product-card" onclick="openProductDetail(${product.id})">
       <button class="favorite-btn ${favorites.includes(product.id) ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite(${product.id})">
         <i class="fas fa-heart"></i>
       </button>
-      
       <div class="availability ${product.availability}">
         ${getAvailabilityText(product.availability)}
       </div>
-      
       <div class="product-top">
         <div class="logo-wrapper">
-          <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\\'/%3E%3C/svg%3E'">
+          <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z\\'/%3E%3C/svg%3E';">
         </div>
       </div>
-      
       <div class="product-info">
         <div class="product-rating">
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        
         <h3 class="product-title">${product.name}</h3>
         <p class="product-category">${getCategoryName(product.category)}</p>
-        
         <div class="product-features">
           ${product.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
         </div>
       </div>
-      
       <div class="product-bottom">
         <div class="product-price">$${product.price}</div>
-        <button class="product-button" onclick="event.stopPropagation(); addToCart(${product.id})">
+        <button class="product-button" onclick="event.stopPropagation(); addToCart(${product.id}, 'СНГ')">
           <i class="fas fa-cart-plus"></i> В корзину
         </button>
       </div>
     </div>
   `).join('');
-  
   updateResultsCount();
 }
 
@@ -628,20 +604,16 @@ function generateStars(rating) {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating % 1 !== 0;
   let stars = '';
-  
   for (let i = 0; i < fullStars; i++) {
     stars += '<i class="fas fa-star star"></i>';
   }
-  
   if (hasHalfStar) {
     stars += '<i class="fas fa-star-half-alt star"></i>';
   }
-  
   const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
   for (let i = 0; i < emptyStars; i++) {
     stars += '<i class="far fa-star star"></i>';
   }
-  
   return stars;
 }
 
@@ -667,7 +639,6 @@ function getAvailabilityText(availability) {
 
 // Обработка поиска
 function handleSearch() {
-  const searchTerm = document.getElementById('searchInput').value.toLowerCase();
   applyFilters();
 }
 
@@ -677,28 +648,19 @@ function applyFilters() {
   const categoryFilter = document.getElementById('categoryFilter').value;
   const priceFilter = document.getElementById('priceFilter').value;
   const sortBy = document.getElementById('sortBy').value;
-  
   filteredProducts = products.filter(product => {
-    // Поиск
-    const matchesSearch = !searchTerm || 
+    const matchesSearch = !searchTerm ||
       product.name.toLowerCase().includes(searchTerm) ||
       product.features.some(feature => feature.toLowerCase().includes(searchTerm)) ||
       getCategoryName(product.category).toLowerCase().includes(searchTerm);
-    
-    // Категория
     const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
-    
-    // Цена
     let matchesPrice = true;
     if (priceFilter !== 'all') {
       const [min, max] = priceFilter.split('-').map(p => p === '+' ? Infinity : parseInt(p));
       matchesPrice = product.price >= min && (max === undefined || product.price <= max);
     }
-    
     return matchesSearch && matchesCategory && matchesPrice;
   });
-  
-  // Сортировка
   filteredProducts.sort((a, b) => {
     switch (sortBy) {
       case 'name':
@@ -713,7 +675,6 @@ function applyFilters() {
         return 0;
     }
   });
-  
   renderProducts();
 }
 
@@ -723,16 +684,17 @@ function updateResultsCount() {
   resultsCount.textContent = `Показано: ${filteredProducts.length} из ${products.length}`;
 }
 
-// Открытие детального просмотра товара
+// Открытие детального просмотра товара с выбором страны
 function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
-  
+  let selectedCountry = product.selectedCountry || 'СНГ';
+  if (!product.originalPrice) product.originalPrice = product.price;
   const productDetail = document.getElementById('productDetail');
   productDetail.innerHTML = `
     <div class="product-detail">
       <div class="product-detail-image">
-        <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\\'/%3E%3C/svg%3E'">
+        <img src="${product.logo}" alt="${product.name}">
       </div>
       <div class="product-detail-info">
         <h2>${product.name}</h2>
@@ -740,15 +702,21 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <div class="product-detail-price">$${product.price}</div>
-        <div class="product-description">
-          ${product.description}
+        <div style="margin: 1rem 0;">
+          <label for="countrySelect">Страна верификации:</label>
+          <select id="countrySelect">
+            <option value="СНГ" ${selectedCountry === 'СНГ' ? 'selected' : ''}>СНГ</option>
+            <option value="Европа" ${selectedCountry === 'Европа' ? 'selected' : ''}>Европа (+25%)</option>
+            <option value="Канада" ${selectedCountry === 'Канада' ? 'selected' : ''}>Канада (+50%)</option>
+          </select>
         </div>
+        <div class="product-detail-price" id="detailPrice">$${getCountryPrice(product, selectedCountry)}</div>
+        <div class="product-description">${product.description}</div>
         <div class="product-features">
           ${product.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
         </div>
         <div style="margin-top: 2rem;">
-          <button class="product-button" onclick="addToCart(${product.id}); closeModal('productModal');" style="margin-right: 1rem;">
+          <button class="product-button" onclick="addToCart(${product.id}, document.getElementById('countrySelect').value); closeModal('productModal');" style="margin-right: 1rem;">
             <i class="fas fa-cart-plus"></i> Добавить в корзину
           </button>
           <button class="product-button" onclick="toggleFavorite(${product.id})" style="background: #ff4757;">
@@ -757,7 +725,6 @@ function openProductDetail(productId) {
         </div>
       </div>
     </div>
-    
     <div class="crypto-payment">
       <h3>Способы оплаты</h3>
       <div class="crypto-options">
@@ -781,30 +748,26 @@ function openProductDetail(productId) {
       <div id="paymentAddress" class="payment-address" style="display: none;"></div>
     </div>
   `;
-  
   openModal('productModal');
+  // Обновление цены при смене страны
+  const select = document.getElementById('countrySelect');
+  select.addEventListener('change', function() {
+    document.getElementById('detailPrice').textContent = '$' + getCountryPrice(product, select.value);
+  });
 }
 
-// Выбор способа оплаты
+// Выбор способа оплаты в товаре
 function selectPayment(method) {
-  // Обновленные адреса для оплаты
   const addresses = {
-  bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
-  ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
-  usdt: 'TFsnebhTqCohGq34dWisnotcivikrJCn2G',
-  paypal: 'payments@kycshop.com'
-};
-  
+    bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
+    ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
+    usdt: 'TFsnebhTqCohGq34dWisnotcivikrJCn2G',
+    paypal: 'payments@kycshop.com'
+  };
   const paymentAddress = document.getElementById('paymentAddress');
   const options = document.querySelectorAll('.crypto-option');
-  
-  // Убираем выделение с других опций
   options.forEach(option => option.classList.remove('selected'));
-  
-  // Выделяем выбранную опцию
   event.currentTarget.classList.add('selected');
-  
-  // Показываем адрес
   paymentAddress.style.display = 'block';
   paymentAddress.innerHTML = `
     <strong>Адрес для оплаты:</strong><br>
@@ -822,31 +785,30 @@ function copyToClipboard(text) {
   });
 }
 
-// Добавление в корзину
-function addToCart(productId) {
+// Добавление в корзину с учетом выбранной страны
+function addToCart(productId, country = 'СНГ') {
   const product = products.find(p => p.id === productId);
   if (!product) return;
-  
-  const existingItem = cart.find(item => item.id === productId);
-  
+  if (!product.originalPrice) product.originalPrice = product.price;
+  const price = getCountryPrice(product, country);
+  // Проверяем, есть ли такой товар с такой страной в корзине
+  const existingItem = cart.find(item => item.id === productId && item.country === country);
   if (existingItem) {
     existingItem.quantity += 1;
   } else {
     cart.push({
       id: productId,
       name: product.name,
-      price: product.price,
+      price: price,
       logo: product.logo,
+      country: country,
       quantity: 1
     });
   }
-  
   updateCartBadge();
   updateCartSidebar();
   saveUserData();
-  
-  // Показываем уведомление
-  showNotification(`${product.name} добавлен в корзину!`);
+  showNotification(`${product.name} (${country}) добавлен в корзину!`);
 }
 
 // Обновление значка корзины
@@ -861,43 +823,40 @@ function updateCartBadge() {
 function updateCartSidebar() {
   const cartItems = document.getElementById('cartItems');
   const cartTotal = document.getElementById('cartTotal');
-  
   if (cart.length === 0) {
     cartItems.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">Корзина пуста</div>';
     cartTotal.textContent = '0.00';
     return;
   }
-  
   cartItems.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <img src="${item.logo}" alt="${item.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\\'/%3E%3C/svg%3E'">
+      <img src="${item.logo}" alt="${item.name}">
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
+        <div style="font-size: 0.9em; color: #888; margin-bottom: 0.2em;">${item.country}</div>
         <div class="cart-item-price">$${item.price}</div>
         <div class="quantity-controls">
-          <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+          <button class="quantity-btn" onclick="updateQuantity(${item.id}, '${item.country}', ${item.quantity - 1})">-</button>
           <span>${item.quantity}</span>
-          <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-          <button class="quantity-btn" onclick="removeFromCart(${item.id})" style="background: #ff4757; color: white; margin-left: 10px;">
+          <button class="quantity-btn" onclick="updateQuantity(${item.id}, '${item.country}', ${item.quantity + 1})">+</button>
+          <button class="quantity-btn" onclick="removeFromCart(${item.id}, '${item.country}')" style="background: #ff4757; color: white; margin-left: 10px;">
             <i class="fas fa-trash"></i>
           </button>
         </div>
       </div>
     </div>
   `).join('');
-  
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   cartTotal.textContent = total.toFixed(2);
 }
 
-// Обновление количества товара
-function updateQuantity(productId, newQuantity) {
+// Обновление количества товара с учетом страны
+function updateQuantity(productId, country, newQuantity) {
   if (newQuantity <= 0) {
-    removeFromCart(productId);
+    removeFromCart(productId, country);
     return;
   }
-  
-  const item = cart.find(item => item.id === productId);
+  const item = cart.find(item => item.id === productId && item.country === country);
   if (item) {
     item.quantity = newQuantity;
     updateCartBadge();
@@ -906,9 +865,9 @@ function updateQuantity(productId, newQuantity) {
   }
 }
 
-// Удаление из корзины
-function removeFromCart(productId) {
-  cart = cart.filter(item => item.id !== productId);
+// Удаление из корзины с учетом страны
+function removeFromCart(productId, country) {
+  cart = cart.filter(item => !(item.id === productId && item.country === country));
   updateCartBadge();
   updateCartSidebar();
   saveUserData();
@@ -917,13 +876,11 @@ function removeFromCart(productId) {
 // Переключение избранного
 function toggleFavorite(productId) {
   const index = favorites.indexOf(productId);
-  
   if (index > -1) {
     favorites.splice(index, 1);
   } else {
     favorites.push(productId);
   }
-  
   saveUserData();
   renderProducts();
   updateFavoritesList();
@@ -932,17 +889,14 @@ function toggleFavorite(productId) {
 // Обновление списка избранного
 function updateFavoritesList() {
   const favoritesList = document.getElementById('favoritesList');
-  
   if (favorites.length === 0) {
     favoritesList.innerHTML = '<div style="text-align: center; padding: 2rem; color: #666;">Нет избранных товаров</div>';
     return;
   }
-  
   const favoriteProducts = products.filter(product => favorites.includes(product.id));
-  
   favoritesList.innerHTML = favoriteProducts.map(product => `
     <div class="favorite-item">
-      <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z\\'/%3E%3C/svg%3E'">
+      <img src="${product.logo}" alt="${product.name}">
       <div class="favorite-item-info">
         <div class="favorite-item-name">${product.name}</div>
         <div class="favorite-item-price">$${product.price}</div>
@@ -958,27 +912,28 @@ function updateFavoritesList() {
 function toggleCart() {
   const cartSidebar = document.getElementById('cartSidebar');
   const cartOverlay = document.getElementById('cartOverlay');
-  
   cartSidebar.classList.toggle('open');
   cartOverlay.classList.toggle('show');
-  
   if (cartSidebar.classList.contains('open')) {
     updateCartSidebar();
-const closeButton = document.createElement('button');
-  closeButton.innerHTML = '&times;';
-  closeButton.style.cssText = `
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    color: #333;
-    cursor: pointer;
-    z-index: 10;
-  `;
-  closeButton.addEventListener('click', closeCart);
-  cartSidebar.appendChild(closeButton);
+    if (!document.getElementById('closeCartBtn')) {
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '&times;';
+      closeButton.id = 'closeCartBtn';
+      closeButton.style.cssText = `
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        background: none;
+        border: none;
+        color: #333;
+        cursor: pointer;
+        z-index: 10;
+      `;
+      closeButton.addEventListener('click', closeCart);
+      cartSidebar.appendChild(closeButton);
+    }
   }
 }
 
@@ -986,7 +941,6 @@ const closeButton = document.createElement('button');
 function closeCart() {
   const cartSidebar = document.getElementById('cartSidebar');
   const cartOverlay = document.getElementById('cartOverlay');
-  
   cartSidebar.classList.remove('open');
   cartOverlay.classList.remove('show');
 }
@@ -995,8 +949,6 @@ function closeCart() {
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   modal.style.display = 'block';
-  
-  // Обновляем содержимое в зависимости от модального окна
   if (modalId === 'favoritesModal') {
     updateFavoritesList();
   } else if (modalId === 'profileModal') {
@@ -1013,7 +965,6 @@ function closeModal(modalId) {
 // Обновление содержимого профиля
 function updateProfileContent() {
   const profileContent = document.getElementById('profileContent');
-  
   if (currentUser) {
     profileContent.innerHTML = `
       <div class="user-info">
@@ -1052,18 +1003,14 @@ function updateProfileContent() {
 function login() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  
   if (!email || !password) {
     alert('Пожалуйста, заполните все поля');
     return;
   }
-  
-  // Симуляция входа
   currentUser = {
     name: email.split('@')[0],
     email: email
   };
-  
   saveUserData();
   closeModal('profileModal');
   showNotification('Вы успешно вошли в систему!');
@@ -1073,18 +1020,14 @@ function login() {
 function register() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
-  
   if (!email || !password) {
     alert('Пожалуйста, заполните все поля');
     return;
   }
-  
-  // Симуляция регистрации
   currentUser = {
     name: email.split('@')[0],
     email: email
   };
-  
   saveUserData();
   closeModal('profileModal');
   showNotification('Регистрация прошла успешно!');
@@ -1101,26 +1044,19 @@ function logout() {
 // Отправка сообщения обратной связи
 function sendMessage(event) {
   event.preventDefault();
-  
   const name = document.getElementById('contactName').value;
   const email = document.getElementById('contactEmail').value;
   const subject = document.getElementById('contactSubject').value;
   const message = document.getElementById('contactMessage').value;
-  
   if (!name || !email || !subject || !message) {
     alert('Пожалуйста, заполните все поля');
     return;
   }
-  
-  // Симуляция отправки сообщения
   showNotification('Ваше сообщение отправлено! Мы свяжемся с вами в ближайшее время.');
-  
-  // Очистка формы
   document.getElementById('contactName').value = '';
   document.getElementById('contactEmail').value = '';
   document.getElementById('contactSubject').value = '';
   document.getElementById('contactMessage').value = '';
-  
   closeModal('contactModal');
 }
 
@@ -1130,16 +1066,14 @@ function openCheckout() {
     alert('Корзина пуста');
     return;
   }
-  
   const checkoutContent = document.getElementById('checkoutContent');
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  
   checkoutContent.innerHTML = `
     <div class="checkout-summary">
       <h3>Ваш заказ</h3>
       ${cart.map(item => `
         <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-          <span>${item.name} x${item.quantity}</span>
+          <span>${item.name} (${item.country}) x${item.quantity}</span>
           <span>$${(item.price * item.quantity).toFixed(2)}</span>
         </div>
       `).join('')}
@@ -1149,7 +1083,6 @@ function openCheckout() {
         <span>$${total.toFixed(2)}</span>
       </div>
     </div>
-    
     <div class="crypto-payment">
       <h3>Выберите способ оплаты</h3>
       <div class="crypto-options">
@@ -1172,17 +1105,14 @@ function openCheckout() {
       </div>
       <div id="checkoutPaymentAddress" class="payment-address" style="display: none;"></div>
     </div>
-    
     <div class="form-group" style="margin-top: 2rem;">
       <label for="buyerEmail">Ваш email для получения товаров:</label>
       <input type="email" id="buyerEmail" placeholder="example@email.com" ${currentUser ? `value="${currentUser.email}"` : ''}>
     </div>
-    
     <button class="checkout-btn" onclick="completeOrder()" style="margin-top: 1rem;">
       Подтвердить заказ
     </button>
   `;
-  
   closeCart();
   openModal('checkoutModal');
 }
@@ -1195,13 +1125,10 @@ function selectCheckoutPayment(method) {
     usdt: 'TFsnebhTqCohGq34dWisnotcivikrJCn2G',
     paypal: 'payments@kycshop.com'
   };
-  
   const paymentAddress = document.getElementById('checkoutPaymentAddress');
   const options = document.querySelectorAll('#checkoutModal .crypto-option');
-  
   options.forEach(option => option.classList.remove('selected'));
   event.currentTarget.classList.add('selected');
-  
   paymentAddress.style.display = 'block';
   paymentAddress.innerHTML = `
     <strong>Адрес для оплаты:</strong><br>
@@ -1216,32 +1143,24 @@ function selectCheckoutPayment(method) {
 function completeOrder() {
   const email = document.getElementById('buyerEmail').value;
   const selectedPayment = document.querySelector('#checkoutModal .crypto-option.selected');
-  
   if (!email) {
     alert('Пожалуйста, введите ваш email');
     return;
   }
-  
   if (!selectedPayment) {
     alert('Пожалуйста, выберите способ оплаты');
     return;
   }
-  
-  // Симуляция оформления заказа
   showNotification('Заказ оформлен! Инструкции по оплате отправлены на ваш email.');
-  
-  // Очистка корзины
   cart = [];
   updateCartBadge();
   updateCartSidebar();
   saveUserData();
-  
   closeModal('checkoutModal');
 }
 
 // Показ уведомления
 function showNotification(message) {
-  // Создаем элемент уведомления
   const notification = document.createElement('div');
   notification.style.cssText = `
     position: fixed;
@@ -1256,15 +1175,12 @@ function showNotification(message) {
     animation: slideIn 0.3s ease;
     max-width: 300px;
   `;
-  
   notification.innerHTML = `
     <div style="display: flex; align-items: center; gap: 0.5rem;">
       <i class="fas fa-check-circle"></i>
       <span>${message}</span>
     </div>
   `;
-  
-  // Добавляем стили анимации
   const style = document.createElement('style');
   style.textContent = `
     @keyframes slideIn {
@@ -1277,10 +1193,7 @@ function showNotification(message) {
     }
   `;
   document.head.appendChild(style);
-  
   document.body.appendChild(notification);
-  
-  // Удаляем уведомление через 3 секунды
   setTimeout(() => {
     notification.style.animation = 'slideOut 0.3s ease';
     setTimeout(() => {
