@@ -442,13 +442,6 @@ const products = [
   }
 ];
 
-// Добавление информации о выдаче документов
-products.forEach(p => {
-  if (!p.description.includes('При покупке вы получаете')) {
-    p.description += '<br><strong>При покупке вы получаете: документы, логи, прокси.</strong>';
-  }
-});
-
 // --- Глобальные переменные для корзины, пользователя, таймера и курса ---
 let currentUser = null;
 let cart = [];
@@ -476,7 +469,7 @@ const countryLabels = {
   'Канада': 'Канада'
 };
 
-// --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
+// --- Вспомогательные функции ---
 function updateCartBadge() {
   const badge = document.getElementById('cartBadge');
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -553,7 +546,7 @@ function applyFilters() {
   renderProducts();
 }
 
-// --- Получение курса монеты через CoinGecko ---
+// --- Получение курса монеты через CoinGecko с обработкой ошибок ---
 async function fetchPaymentRate(symbol) {
   let apiUrl = '';
   switch(symbol) {
@@ -564,12 +557,14 @@ async function fetchPaymentRate(symbol) {
   }
   try {
     const res = await fetch(apiUrl);
+    if (!res.ok) throw new Error('Rate limit or CORS');
     const data = await res.json();
     if(symbol === 'BTC') paymentRate = data.bitcoin.usd;
     if(symbol === 'ETH') paymentRate = data.ethereum.usd;
     if(symbol === 'USDT') paymentRate = data.tether.usd;
   } catch(e) {
     paymentRate = 1;
+    showNotification('Не удалось получить курс монеты. Указана цена в USD.');
   }
 }
 
@@ -814,19 +809,19 @@ function openProductDetail(productId) {
     <div class="crypto-payment">
       <h3>Способы оплаты</h3>
       <div class="crypto-options">
-        <div class="crypto-option" onclick="selectPayment('bitcoin')">
+        <div class="crypto-option" onclick="selectPayment('bitcoin', this)">
           <i class="fab fa-bitcoin" style="font-size: 2rem; color: #f7931a;"></i>
           <div>Bitcoin</div>
         </div>
-        <div class="crypto-option" onclick="selectPayment('ethereum')">
+        <div class="crypto-option" onclick="selectPayment('ethereum', this)">
           <i class="fab fa-ethereum" style="font-size: 2rem; color: #627eea;"></i>
           <div>Ethereum</div>
         </div>
-        <div class="crypto-option" onclick="selectPayment('usdt')">
+        <div class="crypto-option" onclick="selectPayment('usdt', this)">
           <div style="font-size: 2rem; color: #26a17b;">₮</div>
           <div>USDT</div>
         </div>
-        <div class="crypto-option" onclick="selectPayment('paypal')">
+        <div class="crypto-option" onclick="selectPayment('paypal', this)">
           <i class="fab fa-paypal" style="font-size: 2rem; color: #003087;"></i>
           <div>PayPal</div>
         </div>
@@ -843,7 +838,7 @@ function openProductDetail(productId) {
 }
 
 // --- Выбор способа оплаты (в деталке) ---
-function selectPayment(method) {
+function selectPayment(method, elem) {
   const addresses = {
     bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
     ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
@@ -853,7 +848,7 @@ function selectPayment(method) {
   const paymentAddress = document.getElementById('paymentAddress');
   const options = document.querySelectorAll('.crypto-option');
   options.forEach(option => option.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
+  if (elem) elem.classList.add('selected');
   paymentAddress.style.display = 'block';
   paymentAddress.innerHTML = `
     <strong>Адрес для оплаты:</strong><br>
@@ -1114,7 +1109,7 @@ function sendMessage(event) {
 }
 
 // --- Окно оплаты с курсом и таймером ---
-async function selectCheckoutPayment(method) {
+async function selectCheckoutPayment(method, elem) {
   paymentSymbol = method === 'bitcoin' ? 'BTC' : method === 'ethereum' ? 'ETH' : method === 'usdt' ? 'USDT' : 'USD';
   await fetchPaymentRate(paymentSymbol);
 
@@ -1127,7 +1122,7 @@ async function selectCheckoutPayment(method) {
   const paymentAddress = document.getElementById('checkoutPaymentAddress');
   const options = document.querySelectorAll('#checkoutModal .crypto-option');
   options.forEach(option => option.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
+  if (elem) elem.classList.add('selected');
 
   const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   let totalCrypto = totalUSD / paymentRate;
