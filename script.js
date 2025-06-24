@@ -442,6 +442,13 @@ const products = [
   }
 ];
 
+// Добавление информации о выдаче документов
+products.forEach(p => {
+  if (!p.description.includes('При покупке вы получаете')) {
+    p.description += '<br><strong>При покупке вы получаете: документы, логи, прокси.</strong>';
+  }
+});
+
 // --- Глобальные переменные для корзины, пользователя, таймера и курса ---
 let currentUser = null;
 let cart = [];
@@ -718,7 +725,6 @@ function setupEventListeners() {
 // --- Рендеринг товаров ---
 function renderProducts() {
   const productGrid = document.getElementById('productGrid');
-  if (!productGrid) return;
   if (filteredProducts.length === 0) {
     productGrid.innerHTML = `
       <div class="no-results">
@@ -751,6 +757,10 @@ function renderProducts() {
         <p class="product-category">${getCategoryName(product.category)}</p>
         <div class="product-features">
           ${product.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
+        </div>
+        <div class="product-description">${product.description}</div>
+        <div class="product-bonus" style="margin: 0.7em 0; color: #267b2b; font-weight: 500;">
+          <i class="fas fa-envelope"></i> <b>При оплате товара вы получите сканы, логи и прокси на ваш email!</b>
         </div>
       </div>
       <div class="product-bottom">
@@ -793,6 +803,9 @@ function openProductDetail(productId) {
         </div>
         <div class="product-detail-price" id="detailPrice">$${getCountryPrice(product, selectedCountry)}</div>
         <div class="product-description">${product.description}</div>
+        <div class="product-bonus" style="margin: 1em 0; color: #267b2b; font-weight: 500;">
+          <i class="fas fa-envelope"></i> <b>При оплате товара вы получите сканы, логи и прокси на ваш email!</b>
+        </div>
         <div class="product-features">
           ${product.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
         </div>
@@ -882,7 +895,6 @@ function addToCart(productId, country = 'СНГ') {
   updateCartSidebar();
   saveUserData();
   showNotification(`${product.name} (${country}) добавлен в корзину!`);
-}
 
 // --- КОРЗИНА И ИЗБРАННОЕ ---
 function updateCartSidebar() {
