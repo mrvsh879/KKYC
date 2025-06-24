@@ -895,6 +895,7 @@ function addToCart(productId, country = 'СНГ') {
   updateCartSidebar();
   saveUserData();
   showNotification(`${product.name} (${country}) добавлен в корзину!`);
+  }
 
 // --- КОРЗИНА И ИЗБРАННОЕ ---
 function updateCartSidebar() {
