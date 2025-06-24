@@ -449,6 +449,37 @@ let favorites = [];
 let filteredProducts = [...products];
 
 // Инициализация при загрузке страницы
+
+// --- ДОБАВЛЕНО: КОЭФФИЦИЕНТЫ ПО СТРАНАМ ---
+const countryCoefficients = {
+  'СНГ': 1.0,
+  'Европа': 1.2,
+  'Америка': 1.4
+};
+
+// --- ДОБАВЛЕНО: ДОБАВЛЕНИЕ В ОПИСАНИЕ ---
+products.forEach(p => {
+  if (!p.description.includes('При покупке вы получаете')) {
+    p.description += '<br><strong>При покупке вы получаете: документы, логи, прокси.</strong>';
+  }
+});
+
+// --- ДОБАВЛЕНО: ОБНОВЛЕНИЕ ЦЕНЫ ПРИ ВЫБОРЕ СТРАНЫ ---
+function updateProductPrice(selectElement, productId) {
+  const product = products.find(p => p.id === productId);
+  const selectedCountry = selectElement.value;
+  const priceElement = document.getElementById(`price-${productId}`);
+
+  if (!product.originalPrice) {
+    product.originalPrice = product.price;
+  }
+
+  product.selectedCountry = selectedCountry;
+  product.price = +(product.originalPrice * countryCoefficients[selectedCountry]).toFixed(2);
+  priceElement.textContent = `$${product.price}`;
+}
+
+
 document.addEventListener('DOMContentLoaded', function() {
   const modalScrollStyle = document.createElement('style');
 modalScrollStyle.textContent = `
