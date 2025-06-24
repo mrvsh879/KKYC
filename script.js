@@ -469,7 +469,6 @@ const countryLabels = {
   'Канада': 'Канада'
 };
 
-// --- Вспомогательные функции ---
 function updateCartBadge() {
   const badge = document.getElementById('cartBadge');
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -505,8 +504,7 @@ function generateStars(rating) {
 }
 function updateResultsCount() {
   const resultsCount = document.getElementById('resultsCount');
-  if (resultsCount)
-    resultsCount.textContent = `Показано: ${filteredProducts.length} из ${products.length}`;
+  if (resultsCount) resultsCount.textContent = `Показано: ${filteredProducts.length} из ${products.length}`;
 }
 function handleSearch() {
   applyFilters();
@@ -545,8 +543,6 @@ function applyFilters() {
   });
   renderProducts();
 }
-
-// --- Получение курса монеты через CoinGecko с обработкой ошибок ---
 async function fetchPaymentRate(symbol) {
   let apiUrl = '';
   switch(symbol) {
@@ -567,8 +563,6 @@ async function fetchPaymentRate(symbol) {
     showNotification('Не удалось получить курс монеты. Указана цена в USD.');
   }
 }
-
-// --- Таймер для оплаты ---
 function startPaymentTimer() {
   paymentTimeLeft = 900; // 15 минут
   updateTimerDisplay();
@@ -591,15 +585,11 @@ function updateTimerDisplay() {
     timerBlock.textContent = `Время для оплаты: ${min}:${sec < 10 ? '0'+sec : sec}`;
   }
 }
-
-// --- Цена товара с учетом страны ---
 function getCountryPrice(product, country) {
   const basePrice = product.originalPrice || product.price;
   let coeff = countryCoefficients[country] || 1.0;
   return +(basePrice * coeff).toFixed(2);
 }
-
-// --- DOMContentLoaded: стили и запуск ---
 document.addEventListener('DOMContentLoaded', function() {
   const modalScrollStyle = document.createElement('style');
   modalScrollStyle.textContent = `
@@ -678,13 +668,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   `;
   document.head.appendChild(modalScrollStyle);
-
   loadUserData();
   renderProducts();
   setupEventListeners();
 });
-
-// --- Работа с localStorage ---
 function loadUserData() {
   const savedUser = localStorage.getItem('kycShopUser');
   const savedCart = localStorage.getItem('kycShopCart');
@@ -698,8 +685,6 @@ function saveUserData() {
   localStorage.setItem('kycShopCart', JSON.stringify(cart));
   localStorage.setItem('kycShopFavorites', JSON.stringify(favorites));
 }
-
-// --- События ---
 function setupEventListeners() {
   document.getElementById('searchInput').addEventListener('input', handleSearch);
   document.getElementById('categoryFilter').addEventListener('change', applyFilters);
@@ -714,8 +699,6 @@ function setupEventListeners() {
     if (event.target.classList.contains('modal')) event.target.style.display = 'none';
   });
 }
-
-// --- Рендеринг товаров ---
 function renderProducts() {
   const productGrid = document.getElementById('productGrid');
   if (filteredProducts.length === 0) {
@@ -766,8 +749,6 @@ function renderProducts() {
   `).join('');
   updateResultsCount();
 }
-
-// --- Открытие детального просмотра товара с выбором страны ---
 function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
@@ -842,8 +823,6 @@ function openProductDetail(productId) {
     document.getElementById('countryFlag').textContent = countryFlags[select.value];
   });
 }
-
-// --- Выбор способа оплаты (в деталке) ---
 function selectPayment(method, elem) {
   const addresses = {
     bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
@@ -864,8 +843,6 @@ function selectPayment(method, elem) {
     </button>
   `;
 }
-
-// --- Добавление в корзину с учетом страны ---
 function addToCart(productId, country = 'СНГ') {
   const product = products.find(p => p.id === productId);
   if (!product) return;
@@ -888,9 +865,7 @@ function addToCart(productId, country = 'СНГ') {
   updateCartSidebar();
   saveUserData();
   showNotification(`${product.name} (${country}) добавлен в корзину!`);
-  }
-
-// --- КОРЗИНА И ИЗБРАННОЕ ---
+}
 function updateCartSidebar() {
   const cartItems = document.getElementById('cartItems');
   const cartTotal = document.getElementById('cartTotal');
@@ -1113,12 +1088,9 @@ function sendMessage(event) {
   document.getElementById('contactMessage').value = '';
   closeModal('contactModal');
 }
-
-// --- Окно оплаты с курсом и таймером ---
 async function selectCheckoutPayment(method, elem) {
   paymentSymbol = method === 'bitcoin' ? 'BTC' : method === 'ethereum' ? 'ETH' : method === 'usdt' ? 'USDT' : 'USD';
   await fetchPaymentRate(paymentSymbol);
-
   const addresses = {
     bitcoin: 'bc1qnltnxqdetv6lax9g8njzye5yt4a6prkqgfk44q',
     ethereum: '0x6dF5FC126223326B081fA14710157517898C7234',
@@ -1129,14 +1101,12 @@ async function selectCheckoutPayment(method, elem) {
   const options = document.querySelectorAll('#checkoutModal .crypto-option');
   options.forEach(option => option.classList.remove('selected'));
   if (elem) elem.classList.add('selected');
-
   const totalUSD = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   let totalCrypto = totalUSD / paymentRate;
   let symbol = paymentSymbol === 'USD' ? '$' : paymentSymbol;
   let formattedTotal = paymentSymbol === 'USD'
     ? '$' + totalUSD.toFixed(2)
     : totalCrypto.toFixed(6) + ' ' + symbol + ` <span style="color:#888;font-size:0.9em;">(~$${totalUSD.toFixed(2)})</span>`;
-
   paymentAddress.style.display = 'block';
   paymentAddress.innerHTML = `
     <strong>Адрес для оплаты:</strong><br>
@@ -1150,7 +1120,6 @@ async function selectCheckoutPayment(method, elem) {
     </div>
   `;
 }
-
 function openCheckout() {
   if (cart.length === 0) {
     alert('Корзина пуста');
@@ -1158,7 +1127,6 @@ function openCheckout() {
   }
   const checkoutContent = document.getElementById('checkoutContent');
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
   checkoutContent.innerHTML = `
     <div class="checkout-summary">
       <h3>Ваш заказ</h3>
@@ -1178,19 +1146,19 @@ function openCheckout() {
     <div class="crypto-payment" id="checkoutPaymentArea">
       <h3>Выберите способ оплаты</h3>
       <div class="crypto-options">
-        <div class="crypto-option" onclick="selectCheckoutPayment('bitcoin')">
+        <div class="crypto-option" onclick="selectCheckoutPayment('bitcoin', this)">
           <i class="fab fa-bitcoin" style="font-size: 2rem; color: #f7931a;"></i>
           <div>Bitcoin</div>
         </div>
-        <div class="crypto-option" onclick="selectCheckoutPayment('ethereum')">
+        <div class="crypto-option" onclick="selectCheckoutPayment('ethereum', this)">
           <i class="fab fa-ethereum" style="font-size: 2rem; color: #627eea;"></i>
           <div>Ethereum</div>
         </div>
-        <div class="crypto-option" onclick="selectCheckoutPayment('usdt')">
+        <div class="crypto-option" onclick="selectCheckoutPayment('usdt', this)">
           <div style="font-size: 2rem; color: #26a17b;">₮</div>
           <div>USDT</div>
         </div>
-        <div class="crypto-option" onclick="selectCheckoutPayment('paypal')">
+        <div class="crypto-option" onclick="selectCheckoutPayment('paypal', this)">
           <i class="fab fa-paypal" style="font-size: 2rem; color: #003087;"></i>
           <div>PayPal</div>
         </div>
@@ -1209,13 +1177,11 @@ function openCheckout() {
   openModal('checkoutModal');
   startPaymentTimer();
 }
-
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => {
     alert('Адрес скопирован в буфер обмена!');
   });
 }
-
 function completeOrder() {
   const email = document.getElementById('buyerEmail').value;
   const selectedPayment = document.querySelector('#checkoutModal .crypto-option.selected');
@@ -1234,7 +1200,6 @@ function completeOrder() {
   saveUserData();
   closeModal('checkoutModal');
 }
-
 function showNotification(message) {
   const notification = document.createElement('div');
   notification.style.cssText = `
