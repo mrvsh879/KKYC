@@ -442,23 +442,6 @@ const products = [
   }
 ];
 
-// Данные товаров (40 товаров)
-const products = [
-  {
-    id: 1,
-    name: "Binance Pro",
-    category: "crypto",
-    price: 45,
-    rating: 4.8,
-    logo: "https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/binance-coin-bnb-icon.svg",
-    features: ["KYC Complete", "2FA", "API Access"],
-    availability: "in-stock",
-    description: "Полностью верифицированный аккаунт Binance с завершенной KYC процедурой"
-  },
-  // ... (оставшиеся товары без изменений) ...
-  // Вставьте остальные товары сюда, как в вашем исходном файле!
-];
-
 // Добавим пояснение в description для всех товаров (однократно)
 products.forEach(p => {
   if (!p.description.includes('При покупке вы получаете')) {
