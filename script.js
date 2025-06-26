@@ -28,7 +28,7 @@ const products = [
     category: "crypto",
     price: 65,
     rating: 4.6,
-    logo: "https://m.reviewabout.me/storage/product/fb262655cbd1/image/81db8b8dc79b62a478c9fdc9337f32df.png",
+    logo: "https://logotyp.us/file/kraken.svg",
     features: ["Pro Trading", "KYC Tier 4", "Margin Trading"],
     availability: "limited",
     description: "Профессиональный аккаунт Kraken с максимальным уровнем верификации"
@@ -61,7 +61,7 @@ const products = [
     category: "payment",
     price: 50,
     rating: 4.4,
-    logo: "https://1000logos.net/wp-content/uploads/2022/08/Revolut-Symbol.png",
+    logo: "https://logotyp.us/file/revolut.svg",
     features: ["Premium Plan", "Multi-Currency", "Crypto Trading"],
     availability: "in-stock",
     description: "Премиум аккаунт Revolut с доступом к криптоторговле"
@@ -72,7 +72,7 @@ const products = [
     category: "payment",
     price: 30,
     rating: 4.3,
-    logo: "https://d21buns5ku92am.cloudfront.net/69645/images/470456-Frame-c061f4-medium-1677657684.png",
+    logo: "https://logotyp.us/file/wise.svg",
     features: ["Business Account", "Multi-Currency", "Low Fees"],
     availability: "in-stock",
     description: "Бизнес аккаунт Wise для международных переводов"
@@ -116,7 +116,7 @@ const products = [
     category: "crypto",
     price: 60,
     rating: 4.5,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Logo-OKX.png",
+    logo: "https://logotyp.us/file/okx.svg",
     features: ["VIP Level 2", "API Trading", "Futures Access"],
     availability: "in-stock",
     description: "Профессиональный трейдерский аккаунт OKX с VIP статусом"
@@ -127,7 +127,7 @@ const products = [
     category: "crypto",
     price: 85,
     rating: 4.8,
-    logo: "https://nairametrics.com/wp-content/uploads/2024/06/Bybit.png",
+    logo: "https://logotyp.us/file/bybit.svg",
     features: ["Institutional", "High Leverage", "Premium Support"],
     availability: "limited",
     description: "Институциональный аккаунт Bybit с высоким кредитным плечом"
@@ -138,7 +138,7 @@ const products = [
     category: "crypto",
     price: 55,
     rating: 4.4,
-    logo: "https://cdn.prod.website-files.com/60f008ba9757da0940af288e/614dbe395e9b7c73cd9d9fd7_kucoin.png",
+    logo: "https://logotyp.us/file/kucoin.svg",
     features: ["VIP 3", "Trading Bot", "Margin Trading"],
     availability: "in-stock",
     description: "VIP аккаунт KuCoin с доступом к торговым ботам"
@@ -149,7 +149,7 @@ const products = [
     category: "crypto",
     price: 50,
     rating: 4.3,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Huobi-logo.png",
+    logo: "https://logotyp.us/file/huobi.svg",
     features: ["Global Access", "DeFi Staking", "NFT Trading"],
     availability: "in-stock",
     description: "Глобальный аккаунт Huobi с доступом к DeFi и NFT"
@@ -442,19 +442,17 @@ const products = [
   }
 ];
 
-// --- Уникальные рандомные значения количества ---
+// --- Уникальные рандомные значения количества в наличии ---
 function getUniqueRandomNumbers(count, min, max) {
   const numbers = [];
   for (let i = min; i <= max; i++) numbers.push(i);
-  // Перемешиваем массив
+  // Перемешиваем массив Фишера-Йейтса
   for (let i = numbers.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
   }
   return numbers.slice(0, count);
 }
-
-// Добавляем уникальное количество для каждого товара
 const stockNumbers = getUniqueRandomNumbers(products.length, 12, 78);
 products.forEach((product, idx) => {
   product.stock = stockNumbers[idx];
@@ -680,6 +678,7 @@ document.addEventListener('DOMContentLoaded', function() {
       right: 18px;
       top: 53%;
       transform: translateY(-50%);
+
       color: #667eea;
       font-size: 0.9rem;
       pointer-events: none;
@@ -768,7 +767,6 @@ function renderProducts() {
   `).join('');
   updateResultsCount();
 }
-
 function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
