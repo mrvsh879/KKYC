@@ -442,6 +442,24 @@ const products = [
   }
 ];
 
+// --- Уникальные рандомные значения количества ---
+function getUniqueRandomNumbers(count, min, max) {
+  const numbers = [];
+  for (let i = min; i <= max; i++) numbers.push(i);
+  // Перемешиваем массив
+  for (let i = numbers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+  }
+  return numbers.slice(0, count);
+}
+
+// Добавляем уникальное количество для каждого товара
+const stockNumbers = getUniqueRandomNumbers(products.length, 12, 78);
+products.forEach((product, idx) => {
+  product.stock = stockNumbers[idx];
+});
+
 // --- Глобальные переменные для корзины, пользователя, таймера и курса ---
 let currentUser = null;
 let cart = [];
@@ -721,7 +739,7 @@ function renderProducts() {
       </div>
       <div class="product-top">
         <div class="logo-wrapper">
-          <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z\\'/%3E%3C/svg%3E';">
+          <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=[...]'/>
         </div>
       </div>
       <div class="product-info">
@@ -741,6 +759,7 @@ function renderProducts() {
       </div>
       <div class="product-bottom">
         <div class="product-price">$${product.price}</div>
+        <div class="product-stock" style="color:#267b2b;">В наличии: <b>${product.stock}</b> шт.</div>
         <button class="product-button" onclick="event.stopPropagation(); addToCart(${product.id}, 'СНГ')">
           <i class="fas fa-cart-plus"></i> В корзину
         </button>
@@ -749,6 +768,7 @@ function renderProducts() {
   `).join('');
   updateResultsCount();
 }
+
 function openProductDetail(productId) {
   const product = products.find(p => p.id === productId);
   if (!product) return;
@@ -766,6 +786,7 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
+        <div class="product-stock" style="margin-bottom:1em;color:#267b2b;">В наличии: <b>${product.stock}</b> шт.</div>
         <div class="country-select-wrapper">
           <span class="country-select-label">Страна верификации:</span>
           <span class="country-flag" id="countryFlag">${countryFlags[selectedCountry]}</span>
