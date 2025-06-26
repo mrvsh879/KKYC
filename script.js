@@ -28,7 +28,7 @@ const products = [
     category: "crypto",
     price: 65,
     rating: 4.6,
-    logo: "https://logotyp.us/file/kraken.svg",
+    logo: "https://m.reviewabout.me/storage/product/fb262655cbd1/image/81db8b8dc79b62a478c9fdc9337f32df.png",
     features: ["Pro Trading", "KYC Tier 4", "Margin Trading"],
     availability: "limited",
     description: "Профессиональный аккаунт Kraken с максимальным уровнем верификации"
@@ -61,7 +61,7 @@ const products = [
     category: "payment",
     price: 50,
     rating: 4.4,
-    logo: "https://logotyp.us/file/revolut.svg",
+    logo: "https://1000logos.net/wp-content/uploads/2022/08/Revolut-Symbol.png",
     features: ["Premium Plan", "Multi-Currency", "Crypto Trading"],
     availability: "in-stock",
     description: "Премиум аккаунт Revolut с доступом к криптоторговле"
@@ -72,7 +72,7 @@ const products = [
     category: "payment",
     price: 30,
     rating: 4.3,
-    logo: "https://logotyp.us/file/wise.svg",
+    logo: "https://d21buns5ku92am.cloudfront.net/69645/images/470456-Frame-c061f4-medium-1677657684.png",
     features: ["Business Account", "Multi-Currency", "Low Fees"],
     availability: "in-stock",
     description: "Бизнес аккаунт Wise для международных переводов"
@@ -116,7 +116,7 @@ const products = [
     category: "crypto",
     price: 60,
     rating: 4.5,
-    logo: "https://logotyp.us/file/okx.svg",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Logo-OKX.png",
     features: ["VIP Level 2", "API Trading", "Futures Access"],
     availability: "in-stock",
     description: "Профессиональный трейдерский аккаунт OKX с VIP статусом"
@@ -127,7 +127,7 @@ const products = [
     category: "crypto",
     price: 85,
     rating: 4.8,
-    logo: "https://logotyp.us/file/bybit.svg",
+    logo: "https://nairametrics.com/wp-content/uploads/2024/06/Bybit.png",
     features: ["Institutional", "High Leverage", "Premium Support"],
     availability: "limited",
     description: "Институциональный аккаунт Bybit с высоким кредитным плечом"
@@ -138,7 +138,7 @@ const products = [
     category: "crypto",
     price: 55,
     rating: 4.4,
-    logo: "https://logotyp.us/file/kucoin.svg",
+    logo: "https://cdn.prod.website-files.com/60f008ba9757da0940af288e/614dbe395e9b7c73cd9d9fd7_kucoin.png",
     features: ["VIP 3", "Trading Bot", "Margin Trading"],
     availability: "in-stock",
     description: "VIP аккаунт KuCoin с доступом к торговым ботам"
@@ -149,7 +149,7 @@ const products = [
     category: "crypto",
     price: 50,
     rating: 4.3,
-    logo: "https://logotyp.us/file/huobi.svg",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Huobi-logo.png",
     features: ["Global Access", "DeFi Staking", "NFT Trading"],
     availability: "in-stock",
     description: "Глобальный аккаунт Huobi с доступом к DeFi и NFT"
@@ -442,22 +442,6 @@ const products = [
   }
 ];
 
-// --- Уникальные рандомные значения количества в наличии ---
-function getUniqueRandomNumbers(count, min, max) {
-  const numbers = [];
-  for (let i = min; i <= max; i++) numbers.push(i);
-  // Перемешиваем массив Фишера-Йейтса
-  for (let i = numbers.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
-  }
-  return numbers.slice(0, count);
-}
-const stockNumbers = getUniqueRandomNumbers(products.length, 12, 78);
-products.forEach((product, idx) => {
-  product.stock = stockNumbers[idx];
-});
-
 // --- Глобальные переменные для корзины, пользователя, таймера и курса ---
 let currentUser = null;
 let cart = [];
@@ -678,7 +662,6 @@ document.addEventListener('DOMContentLoaded', function() {
       right: 18px;
       top: 53%;
       transform: translateY(-50%);
-
       color: #667eea;
       font-size: 0.9rem;
       pointer-events: none;
@@ -738,7 +721,7 @@ function renderProducts() {
       </div>
       <div class="product-top">
         <div class="logo-wrapper">
-          <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=[...]'/>
+          <img src="${product.logo}" alt="${product.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 24 24\\' fill=\\'%23667eea\\'%3E%3Cpath d=\\'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z\\'/%3E%3C/svg%3E';">
         </div>
       </div>
       <div class="product-info">
@@ -758,7 +741,6 @@ function renderProducts() {
       </div>
       <div class="product-bottom">
         <div class="product-price">$${product.price}</div>
-        <div class="product-stock" style="color:#267b2b;">В наличии: <b>${product.stock}</b> шт.</div>
         <button class="product-button" onclick="event.stopPropagation(); addToCart(${product.id}, 'СНГ')">
           <i class="fas fa-cart-plus"></i> В корзину
         </button>
@@ -784,7 +766,6 @@ function openProductDetail(productId) {
           ${generateStars(product.rating)}
           <span class="rating-text">${product.rating}</span>
         </div>
-        <div class="product-stock" style="margin-bottom:1em;color:#267b2b;">В наличии: <b>${product.stock}</b> шт.</div>
         <div class="country-select-wrapper">
           <span class="country-select-label">Страна верификации:</span>
           <span class="country-flag" id="countryFlag">${countryFlags[selectedCountry]}</span>
