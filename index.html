@@ -235,6 +235,7 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(10px);
       cursor: pointer;
+      min-width: 0;
     }
 
     .product-card:hover {
@@ -940,6 +941,14 @@
         grid-template-columns: 1fr 1fr;
       }
     }
+    .product-info,
+    .product-bottom,
+    .product-description,
+    .product-features {
+      min-width: 0;
+      word-break: break-word;
+      overflow-wrap: break-word;
+}
   </style>
 </head>
 <body>
